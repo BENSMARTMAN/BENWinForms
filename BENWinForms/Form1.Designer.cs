@@ -39,13 +39,23 @@
             textBox2 = new TextBox();
             textBox3 = new TextBox();
             button2 = new Button();
+            tabControl1 = new TabControl();
+            tabPage1 = new TabPage();
+            tabPage2 = new TabPage();
+            button4 = new Button();
+            dataGridView1 = new DataGridView();
+            button3 = new Button();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
+            tabControl1.SuspendLayout();
+            tabPage1.SuspendLayout();
+            tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             SuspendLayout();
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(30, 43);
+            label1.Location = new Point(6, 36);
             label1.Name = "label1";
             label1.Size = new Size(46, 19);
             label1.TabIndex = 0;
@@ -55,7 +65,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(30, 86);
+            label2.Location = new Point(6, 78);
             label2.Name = "label2";
             label2.Size = new Size(46, 19);
             label2.TabIndex = 1;
@@ -69,7 +79,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(30, 124);
+            label3.Location = new Point(6, 118);
             label3.Name = "label3";
             label3.Size = new Size(46, 19);
             label3.TabIndex = 2;
@@ -77,7 +87,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(30, 227);
+            button1.Location = new Point(3, 203);
             button1.Name = "button1";
             button1.Size = new Size(94, 29);
             button1.TabIndex = 3;
@@ -88,7 +98,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(30, 161);
+            label4.Location = new Point(6, 159);
             label4.Name = "label4";
             label4.Size = new Size(80, 19);
             label4.TabIndex = 4;
@@ -98,7 +108,7 @@
             // 
             listBox1.FormattingEnabled = true;
             listBox1.ItemHeight = 19;
-            listBox1.Location = new Point(286, 43);
+            listBox1.Location = new Point(280, 19);
             listBox1.Name = "listBox1";
             listBox1.Size = new Size(502, 213);
             listBox1.TabIndex = 5;
@@ -106,28 +116,28 @@
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(82, 35);
+            textBox1.Location = new Point(58, 28);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(198, 27);
             textBox1.TabIndex = 6;
             // 
             // textBox2
             // 
-            textBox2.Location = new Point(82, 78);
+            textBox2.Location = new Point(59, 70);
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(197, 27);
             textBox2.TabIndex = 7;
             // 
             // textBox3
             // 
-            textBox3.Location = new Point(82, 116);
+            textBox3.Location = new Point(59, 110);
             textBox3.Name = "textBox3";
             textBox3.Size = new Size(197, 27);
             textBox3.TabIndex = 8;
             // 
             // button2
             // 
-            button2.Location = new Point(150, 227);
+            button2.Location = new Point(119, 203);
             button2.Name = "button2";
             button2.Size = new Size(94, 29);
             button2.TabIndex = 9;
@@ -135,28 +145,95 @@
             button2.UseVisualStyleBackColor = true;
             button2.Click += button2_Click;
             // 
+            // tabControl1
+            // 
+            tabControl1.Controls.Add(tabPage1);
+            tabControl1.Controls.Add(tabPage2);
+            tabControl1.Location = new Point(1, -2);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(802, 464);
+            tabControl1.TabIndex = 0;
+            // 
+            // tabPage1
+            // 
+            tabPage1.Controls.Add(textBox1);
+            tabPage1.Controls.Add(button2);
+            tabPage1.Controls.Add(label1);
+            tabPage1.Controls.Add(button1);
+            tabPage1.Controls.Add(listBox1);
+            tabPage1.Controls.Add(textBox3);
+            tabPage1.Controls.Add(label4);
+            tabPage1.Controls.Add(label2);
+            tabPage1.Controls.Add(textBox2);
+            tabPage1.Controls.Add(label3);
+            tabPage1.Location = new Point(4, 28);
+            tabPage1.Name = "tabPage1";
+            tabPage1.Padding = new Padding(3);
+            tabPage1.Size = new Size(794, 432);
+            tabPage1.TabIndex = 0;
+            tabPage1.Text = "作業一";
+            tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            tabPage2.Controls.Add(button4);
+            tabPage2.Controls.Add(dataGridView1);
+            tabPage2.Controls.Add(button3);
+            tabPage2.Location = new Point(4, 28);
+            tabPage2.Name = "tabPage2";
+            tabPage2.Padding = new Padding(3);
+            tabPage2.Size = new Size(794, 432);
+            tabPage2.TabIndex = 1;
+            tabPage2.Text = "作業二";
+            tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // button4
+            // 
+            button4.Location = new Point(91, 186);
+            button4.Name = "button4";
+            button4.Size = new Size(94, 29);
+            button4.TabIndex = 2;
+            button4.Text = "button4";
+            button4.UseVisualStyleBackColor = true;
+            button4.Click += button4_Click;
+            // 
+            // dataGridView1
+            // 
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Location = new Point(337, 148);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersWidth = 51;
+            dataGridView1.Size = new Size(300, 188);
+            dataGridView1.TabIndex = 1;
+            // 
+            // button3
+            // 
+            button3.Location = new Point(87, 112);
+            button3.Name = "button3";
+            button3.Size = new Size(94, 29);
+            button3.TabIndex = 0;
+            button3.Text = "button3";
+            button3.UseVisualStyleBackColor = true;
+            button3.Click += button3_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
-            Controls.Add(button2);
-            Controls.Add(textBox3);
-            Controls.Add(textBox2);
-            Controls.Add(textBox1);
-            Controls.Add(listBox1);
-            Controls.Add(label4);
-            Controls.Add(button1);
-            Controls.Add(label3);
-            Controls.Add(label2);
-            Controls.Add(label1);
+            Controls.Add(tabControl1);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "帳號管理程式";
+            Text = "表單作業";
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).EndInit();
+            tabControl1.ResumeLayout(false);
+            tabPage1.ResumeLayout(false);
+            tabPage1.PerformLayout();
+            tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -172,5 +249,11 @@
         private TextBox textBox2;
         private TextBox textBox1;
         private Button button2;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private Button button3;
+        private DataGridView dataGridView1;
+        private Button button4;
     }
 }
