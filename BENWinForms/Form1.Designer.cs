@@ -42,6 +42,9 @@
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
+            button7 = new Button();
+            button6 = new Button();
+            button5 = new Button();
             button4 = new Button();
             dataGridView1 = new DataGridView();
             button3 = new Button();
@@ -152,7 +155,7 @@
             tabControl1.Location = new Point(1, -2);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(802, 464);
+            tabControl1.Size = new Size(1084, 589);
             tabControl1.TabIndex = 0;
             // 
             // tabPage1
@@ -170,50 +173,83 @@
             tabPage1.Location = new Point(4, 28);
             tabPage1.Name = "tabPage1";
             tabPage1.Padding = new Padding(3);
-            tabPage1.Size = new Size(794, 432);
+            tabPage1.Size = new Size(1076, 557);
             tabPage1.TabIndex = 0;
             tabPage1.Text = "作業一";
             tabPage1.UseVisualStyleBackColor = true;
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(button7);
+            tabPage2.Controls.Add(button6);
+            tabPage2.Controls.Add(button5);
             tabPage2.Controls.Add(button4);
             tabPage2.Controls.Add(dataGridView1);
             tabPage2.Controls.Add(button3);
             tabPage2.Location = new Point(4, 28);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(794, 432);
+            tabPage2.Size = new Size(1076, 557);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "作業二";
             tabPage2.UseVisualStyleBackColor = true;
             // 
+            // button7
+            // 
+            button7.Location = new Point(19, 254);
+            button7.Name = "button7";
+            button7.Size = new Size(149, 44);
+            button7.TabIndex = 5;
+            button7.Text = "刪除";
+            button7.UseVisualStyleBackColor = true;
+            button7.Click += button7_Click;
+            // 
+            // button6
+            // 
+            button6.Location = new Point(19, 192);
+            button6.Name = "button6";
+            button6.Size = new Size(149, 39);
+            button6.TabIndex = 4;
+            button6.Text = "編輯";
+            button6.UseVisualStyleBackColor = true;
+            button6.Click += button6_Click;
+            // 
+            // button5
+            // 
+            button5.Location = new Point(19, 133);
+            button5.Name = "button5";
+            button5.Size = new Size(149, 40);
+            button5.TabIndex = 3;
+            button5.Text = "新增";
+            button5.UseVisualStyleBackColor = true;
+            button5.Click += button5_Click;
+            // 
             // button4
             // 
-            button4.Location = new Point(91, 186);
+            button4.Location = new Point(19, 74);
             button4.Name = "button4";
-            button4.Size = new Size(94, 29);
+            button4.Size = new Size(149, 43);
             button4.TabIndex = 2;
-            button4.Text = "button4";
+            button4.Text = "資料顯示";
             button4.UseVisualStyleBackColor = true;
             button4.Click += button4_Click;
             // 
             // dataGridView1
             // 
             dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(337, 148);
+            dataGridView1.Location = new Point(174, 16);
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 51;
-            dataGridView1.Size = new Size(300, 188);
+            dataGridView1.Size = new Size(891, 392);
             dataGridView1.TabIndex = 1;
             // 
             // button3
             // 
-            button3.Location = new Point(87, 112);
+            button3.Location = new Point(19, 16);
             button3.Name = "button3";
-            button3.Size = new Size(94, 29);
+            button3.Size = new Size(149, 43);
             button3.TabIndex = 0;
-            button3.Text = "button3";
+            button3.Text = "連線測試";
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
@@ -221,7 +257,7 @@
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(1082, 582);
             Controls.Add(tabControl1);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
@@ -255,5 +291,8 @@
         private Button button3;
         private DataGridView dataGridView1;
         private Button button4;
+        private Button button7;
+        private Button button6;
+        private Button button5;
     }
 }

@@ -127,7 +127,7 @@ namespace BENWinForms
         {
             try
             {
-                // 測試是否可以連到資料庫
+               
                 SqlConnection conn = new SqlConnection();
                 conn.ConnectionString = @"
                         Server=localhost;
@@ -136,17 +136,6 @@ namespace BENWinForms
                         Password=SYSADM";
                 this.ConnString = conn.ConnectionString;
                 ItemsService.ConnString = conn.ConnectionString;
-                // 使用 builder
-                //SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-                //// 伺服器
-                //builder.DataSource = "localhost";
-                //builder.InitialCatalog = "HRIS";
-                //builder.UserID = "SYSADM";
-                //builder.Password = "SYSADM";
-
-                //conn.ConnectionString = builder.ConnectionString;
-
-                // 可以或失敗都跳出訊息
                 conn.Open();
                 MessageBox.Show("連線成功!");
                 conn.Close();
@@ -166,13 +155,70 @@ namespace BENWinForms
             items = conn.Query<Items>("Select * From Items").ToList();
             conn.Close();
             dataGridView1.DataSource = items;
-            
+
             // set so whole row is selected 讓整行被選取
             dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             // can only select one row at a time 不可以多選
             dataGridView1.MultiSelect = false;
             // read only
             dataGridView1.ReadOnly = true;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            // check if a row is selected
+            bool isSelected = dataGridView1.SelectedRows.Count > 0;
+            // get the Items data from row
+            // 把物品資料抓出來
+            Items items = new Items();
+            if (isSelected)
+            {
+                items.Name = dataGridView1.SelectedRows[0].Cells["Name"].Value.ToString();
+                items.Description = dataGridView1.SelectedRows[0].Cells["Description"].Value.ToString();
+                items.MarketValue = dataGridView1.SelectedRows[0].Cells["MarketValue"].Value.ToString();
+                items.Quantity = dataGridView1.SelectedRows[0].Cells["Quantity"].Value.ToString();
+                items.Type = dataGridView1.SelectedRows[0].Cells["Type"].Value.ToString();
+                items.Id = dataGridView1.SelectedRows[0].Cells["Id"].Value.ToString();
+            }
+            else
+            {
+                MessageBox.Show("請選擇一個物品");
+                return;
+            }
+            FormUpdate formUpdate = new FormUpdate(items);
+            formUpdate.ShowDialog();
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            // check if a row is selected
+            bool isSelected = dataGridView1.SelectedRows.Count > 0;
+            // 檢查有沒有選一行資料列
+            if (isSelected == false)
+            {
+                MessageBox.Show("請選擇一個物品");
+                return;
+            }
+            string Id = dataGridView1.SelectedRows[0].Cells["Id"].Value.ToString();
+            string Name = dataGridView1.SelectedRows[0].Cells["Name"].Value.ToString();
+            // 跳訊息確定是否要刪除
+            var result = MessageBox.Show("確定要刪除" + Name + "嗎?", "刪除物品", MessageBoxButtons.YesNo);
+            // 如果選NO就結束
+            if (result == DialogResult.No)
+            {
+                return;
+            }
+            SqlConnection conn = new SqlConnection(ConnString);
+            conn.Execute("Delete From Items Where Id = @ID", new { Id });
+            MessageBox.Show("刪除成功");
+            conn.Close();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Items items = new Items();
+            FormNew formNew = new FormNew(items);
+            formNew.ShowDialog();
         }
     }
 }
