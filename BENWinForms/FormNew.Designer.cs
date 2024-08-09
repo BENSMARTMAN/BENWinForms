@@ -173,7 +173,7 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Name = "FormNew";
-            Text = "FormNew";
+            Text = "新增物品表單";
             ResumeLayout(false);
             PerformLayout();
         }

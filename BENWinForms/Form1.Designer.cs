@@ -48,6 +48,7 @@
             button4 = new Button();
             dataGridView1 = new DataGridView();
             button3 = new Button();
+            button8 = new Button();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -180,6 +181,7 @@
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(button8);
             tabPage2.Controls.Add(button7);
             tabPage2.Controls.Add(button6);
             tabPage2.Controls.Add(button5);
@@ -253,6 +255,16 @@
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
+            // button8
+            // 
+            button8.Location = new Point(19, 314);
+            button8.Name = "button8";
+            button8.Size = new Size(149, 47);
+            button8.TabIndex = 6;
+            button8.Text = "搜尋";
+            button8.UseVisualStyleBackColor = true;
+            button8.Click += button8_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
@@ -294,5 +306,6 @@
         private Button button7;
         private Button button6;
         private Button button5;
+        private Button button8;
     }
 }

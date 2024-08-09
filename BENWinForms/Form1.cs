@@ -1,3 +1,4 @@
+using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
 using Dapper;
@@ -127,11 +128,11 @@ namespace BENWinForms
         {
             try
             {
-               
+
                 SqlConnection conn = new SqlConnection();
                 conn.ConnectionString = @"
-                        Server=localhost;
-                        Database=HRIS;
+                        Server=192.168.1.9;
+                        Database=_SmartManTest;
                         User Id=SYSADM;
                         Password=SYSADM";
                 this.ConnString = conn.ConnectionString;
@@ -219,6 +220,18 @@ namespace BENWinForms
             Items items = new Items();
             FormNew formNew = new FormNew(items);
             formNew.ShowDialog();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            FormSearch FormSearch = new FormSearch(this);
+            FormSearch.Show();
+        }
+        public void UpdateDataGridView(DataTable dataTable)
+        {
+           
+            dataGridView1.DataSource = dataTable;
+            
         }
     }
 }

@@ -46,6 +46,12 @@ namespace BENWinForms
             string updatedQuantity = textBox4.Text; // Quantity
             string updatedType = textBox5.Text; // Type
             string ID = textBox6.Text; // ID
+            if (!decimal.TryParse(updatedMarketValue, out decimal marketValue) || marketValue <= 0 ||
+            !int.TryParse(updatedQuantity, out int quantity) || quantity <= 0)
+            {
+                MessageBox.Show("價值或數量請輸入正數");
+                return;
+            }
             conn.Execute("Update Items Set Name = @updatedName, Description = @updatedDescription, MarketValue = @updatedMarketValue, Quantity = @updatedQuantity , Type = @updatedType , LastUpdated = FORMAT(GETDATE(), 'yyyy-MM-dd HH:mm')  Where Id = @ID",
                 new { updatedName, updatedDescription, updatedMarketValue, updatedQuantity, updatedType, ID }
                 );

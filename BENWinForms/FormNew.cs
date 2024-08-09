@@ -44,6 +44,12 @@ namespace BENWinForms
             string newMarketValue = textBox3.Text; // MarketValue
             string newQuantity = textBox4.Text; // Quantity
             string newType = textBox5.Text; // Type
+            if (!decimal.TryParse(newMarketValue, out decimal marketValue) || marketValue <= 0 ||
+            !int.TryParse(newQuantity, out int quantity) || quantity <= 0)
+            {
+                MessageBox.Show("價值或數量請輸入正數");
+                return;
+            }
             conn.Execute("INSERT INTO Items (Name, Description, MarketValue, Quantity, Type, LastUpdated) VALUES( @newName, @newDescription, @newMarketValue, @newQuantity, @newType, GETDATE());",
                 new { newName, newDescription, newMarketValue, newQuantity, newType }
                 );
