@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using Dapper;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -18,6 +19,8 @@ namespace BENWinForms
         {
             InitializeComponent();
             dataGridView1.ColumnHeaderMouseDoubleClick += dataGridView1_ColumnHeaderMouseDoubleClick;
+            SearchBox.TextChanged += SearchBox_TextChanged;
+
             // 創建 TabControl
             TabControl tabControl = new TabControl();
             tabControl.Dock = DockStyle.Fill;
@@ -229,6 +232,10 @@ namespace BENWinForms
         }
         public void Query()
         {
+            itemsTable.Clear();
+            itemsTable.DefaultView.RowFilter = string.Empty;
+            itemsTable.DefaultView.Sort = string.Empty;
+            SearchBox.Text = string.Empty;
             using (SqlConnection conn = new SqlConnection(Sqllink))
             {
                 conn.Open();
@@ -239,14 +246,14 @@ namespace BENWinForms
                     dataGridView1.AllowUserToAddRows = false;
 
                     // 设置列排序模式
-                    //dataGridView1.Columns["MarketValue"].SortMode = DataGridViewColumnSortMode.Automatic;
+                    //dataGridView1.Columns["ID"].SortMode = DataGridViewColumnSortMode.Automatic;
                     //dataGridView1.Columns["Quantity"].SortMode = DataGridViewColumnSortMode.Automatic;
                 }
             }
 
         }
 
-       
+
 
         private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
@@ -264,12 +271,27 @@ namespace BENWinForms
                     direction = ListSortDirection.Ascending;
                 }
 
-                // 对该列进行排序
+                // 對指定列進行排序
                 dataGridView1.Sort(dataGridView1.Columns[e.ColumnIndex], direction);
             }
 
         }
 
-       
+        private void SearchBox_TextChanged(object sender, EventArgs e)
+        {
+            string filterText = SearchBox.Text;
+
+            if (string.IsNullOrEmpty(filterText))
+            {
+                // 如果搜尋框是空的，顯示所有資料
+                (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = string.Empty;
+            }
+            else
+            {
+                // 根據輸入內容進行條件搜尋
+                string filterExpression = $"Name LIKE '%{filterText}%' OR Type LIKE '%{filterText}%' OR Description LIKE '%{filterText}%'";
+                (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = filterExpression;
+            }
+        }
     }
 }

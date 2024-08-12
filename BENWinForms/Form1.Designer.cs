@@ -45,6 +45,7 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             dataGridView1 = new DataGridView();
             panel1 = new Panel();
+            SearchBox = new TextBox();
             button3 = new Button();
             button8 = new Button();
             button4 = new Button();
@@ -224,6 +225,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(SearchBox);
             panel1.Controls.Add(button3);
             panel1.Controls.Add(button8);
             panel1.Controls.Add(button4);
@@ -235,6 +237,15 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1064, 177);
             panel1.TabIndex = 2;
+            // 
+            // SearchBox
+            // 
+            SearchBox.Font = new Font("微軟正黑體", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 136);
+            SearchBox.Location = new Point(12, 125);
+            SearchBox.Name = "SearchBox";
+            SearchBox.Size = new Size(459, 43);
+            SearchBox.TabIndex = 7;
+            SearchBox.TextChanged += SearchBox_TextChanged;
             // 
             // button3
             // 
@@ -314,6 +325,7 @@
             tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel1.ResumeLayout(false);
+            panel1.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -342,5 +354,6 @@
         private Button button8;
         private TableLayoutPanel tableLayoutPanel1;
         private Panel panel1;
+        private TextBox SearchBox;
     }
 }
