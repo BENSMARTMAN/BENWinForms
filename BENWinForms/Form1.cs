@@ -1,3 +1,4 @@
+ï»¿using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
@@ -10,26 +11,30 @@ namespace BENWinForms
     {
         public string ConnString { get; set; }
         private List<string> accountInfoList = new List<string>();
+        //private List<Items> items = new List<Items>();
+        private DataTable itemsTable = new DataTable();
+        string Sqllink = @"Server=192.168.1.9;Database=_SmartManTest;User Id=SYSADM;Password=SYSADM";
         public Form1()
         {
             InitializeComponent();
-            // ³Ğ«Ø TabControl
+            dataGridView1.ColumnHeaderMouseDoubleClick += dataGridView1_ColumnHeaderMouseDoubleClick;
+            // å‰µå»º TabControl
             TabControl tabControl = new TabControl();
             tabControl.Dock = DockStyle.Fill;
 
-            // ³Ğ«Ø²Ä¤@­Ó TabPage
+            // å‰µå»ºç¬¬ä¸€å€‹ TabPage
             TabPage tabPage1 = new TabPage("Tab 1");
-            // ²K¥[¨ä¥L±±¥ó¨ì tabPage1
+            // æ·»åŠ å…¶ä»–æ§ä»¶åˆ° tabPage1
 
-            // ³Ğ«Ø²Ä¤G­Ó TabPage
+            // å‰µå»ºç¬¬äºŒå€‹ TabPage
             TabPage tabPage2 = new TabPage("Tab 2");
-            // ²K¥[¨ä¥L±±¥ó¨ì tabPage2
+            // æ·»åŠ å…¶ä»–æ§ä»¶åˆ° tabPage2
 
-            // ±N TabPages ²K¥[¨ì TabControl
+            // å°‡ TabPages æ·»åŠ åˆ° TabControl
             tabControl.TabPages.Add(tabPage1);
             tabControl.TabPages.Add(tabPage2);
 
-            // ±N TabControl ²K¥[¨ìµ¡Åé
+            // å°‡ TabControl æ·»åŠ åˆ°çª—é«”
             this.Controls.Add(tabControl);
         }
 
@@ -51,16 +56,16 @@ namespace BENWinForms
             string description = textBox3.Text;
             if (string.IsNullOrWhiteSpace(account) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(description))
             {
-                MessageBox.Show("±b¸¹¡B±K½X©M»¡©úÄæ¦ì§¡¤£±o¬°ªÅ¥Õ¡I");
+                MessageBox.Show("å¸³è™Ÿã€å¯†ç¢¼å’Œèªªæ˜æ¬„ä½å‡ä¸å¾—ç‚ºç©ºç™½ï¼");
                 return;
             }
             string strength = CheckPasswordStrength(password);
-            string info = $"±b¸¹: {account}, ±K½X:{password}, »¡©ú: {description}, ±K½X±j«×: {strength} ";
+            string info = $"å¸³è™Ÿ: {account}, å¯†ç¢¼:{password}, èªªæ˜: {description}, å¯†ç¢¼å¼·åº¦: {strength} ";
             listBox1.Items.Add(info);
-            label4.Text = "±K½X±j«×: " + strength;
+            label4.Text = "å¯†ç¢¼å¼·åº¦: " + strength;
 
 
-            // ²MªÅ TextBox
+            // æ¸…ç©º TextBox
             textBox1.Clear();
             textBox2.Clear();
             textBox3.Clear();
@@ -74,7 +79,7 @@ namespace BENWinForms
             bool hasSpecialChar = false;
             bool isLongEnough = password.Length >= 8;
 
-            // ¯S®í²Å¸¹ªºÀË¬d
+            // ç‰¹æ®Šç¬¦è™Ÿçš„æª¢æŸ¥
             string specialChars = "!@#$%^&*";
             foreach (char c in password)
             {
@@ -95,12 +100,12 @@ namespace BENWinForms
             switch (criteriaCount)
             {
                 case 5:
-                    return "±j";
+                    return "å¼·";
                 case 4:
                 case 3:
-                    return "¤¤";
+                    return "ä¸­";
                 default:
-                    return "®z";
+                    return "å¼±";
             }
         }
 
@@ -115,13 +120,13 @@ namespace BENWinForms
             int selectedIndex = listBox1.SelectedIndex;
             if (selectedIndex == -1)
             {
-                MessageBox.Show("½Ğ¿ï¾Ü¤@­Ó±b¸¹");
+                MessageBox.Show("è«‹é¸æ“‡ä¸€å€‹å¸³è™Ÿ");
                 return;
             }
 
             listBox1.Items.RemoveAt(selectedIndex);
 
-            MessageBox.Show("²¾°£¦¨¥\!!!");
+            MessageBox.Show("ç§»é™¤æˆåŠŸ!!!");
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -138,31 +143,18 @@ namespace BENWinForms
                 this.ConnString = conn.ConnectionString;
                 ItemsService.ConnString = conn.ConnectionString;
                 conn.Open();
-                MessageBox.Show("³s½u¦¨¥\!");
+                MessageBox.Show("é€£ç·šæˆåŠŸ!");
                 conn.Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show("µo¥Í¿ù»~: " + ex.Message + "­ş¸Ì¿ù?" + ex.StackTrace);
+                MessageBox.Show("ç™¼ç”ŸéŒ¯èª¤: " + ex.Message + "å“ªè£¡éŒ¯?" + ex.StackTrace);
             }
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            SqlConnection conn = new SqlConnection();
-            conn.ConnectionString = ConnString;
-            conn.Open();
-            List<Items> items = new List<Items>();
-            items = conn.Query<Items>("Select * From Items").ToList();
-            conn.Close();
-            dataGridView1.DataSource = items;
-
-            // set so whole row is selected Åı¾ã¦æ³Q¿ï¨ú
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            // can only select one row at a time ¤£¥i¥H¦h¿ï
-            dataGridView1.MultiSelect = false;
-            // read only
-            dataGridView1.ReadOnly = true;
+            Query();
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -170,7 +162,7 @@ namespace BENWinForms
             // check if a row is selected
             bool isSelected = dataGridView1.SelectedRows.Count > 0;
             // get the Items data from row
-            // §âª««~¸ê®Æ§ì¥X¨Ó
+            // æŠŠç‰©å“è³‡æ–™æŠ“å‡ºä¾†
             Items items = new Items();
             if (isSelected)
             {
@@ -183,7 +175,7 @@ namespace BENWinForms
             }
             else
             {
-                MessageBox.Show("½Ğ¿ï¾Ü¤@­Óª««~");
+                MessageBox.Show("è«‹é¸æ“‡ä¸€å€‹ç‰©å“");
                 return;
             }
             FormUpdate formUpdate = new FormUpdate(items);
@@ -194,24 +186,24 @@ namespace BENWinForms
         {
             // check if a row is selected
             bool isSelected = dataGridView1.SelectedRows.Count > 0;
-            // ÀË¬d¦³¨S¦³¿ï¤@¦æ¸ê®Æ¦C
+            // æª¢æŸ¥æœ‰æ²’æœ‰é¸ä¸€è¡Œè³‡æ–™åˆ—
             if (isSelected == false)
             {
-                MessageBox.Show("½Ğ¿ï¾Ü¤@­Óª««~");
+                MessageBox.Show("è«‹é¸æ“‡ä¸€å€‹ç‰©å“");
                 return;
             }
             string Id = dataGridView1.SelectedRows[0].Cells["Id"].Value.ToString();
             string Name = dataGridView1.SelectedRows[0].Cells["Name"].Value.ToString();
-            // ¸õ°T®§½T©w¬O§_­n§R°£
-            var result = MessageBox.Show("½T©w­n§R°£" + Name + "¶Ü?", "§R°£ª««~", MessageBoxButtons.YesNo);
-            // ¦pªG¿ïNO´Nµ²§ô
+            // è·³è¨Šæ¯ç¢ºå®šæ˜¯å¦è¦åˆªé™¤
+            var result = MessageBox.Show("ç¢ºå®šè¦åˆªé™¤" + Name + "å—?", "åˆªé™¤ç‰©å“", MessageBoxButtons.YesNo);
+            // å¦‚æœé¸NOå°±çµæŸ
             if (result == DialogResult.No)
             {
                 return;
             }
             SqlConnection conn = new SqlConnection(ConnString);
             conn.Execute("Delete From Items Where Id = @ID", new { Id });
-            MessageBox.Show("§R°£¦¨¥\");
+            MessageBox.Show("åˆªé™¤æˆåŠŸ");
             conn.Close();
         }
 
@@ -229,9 +221,55 @@ namespace BENWinForms
         }
         public void UpdateDataGridView(DataTable dataTable)
         {
-           
+
             dataGridView1.DataSource = dataTable;
-            
+            dataGridView1.AllowUserToAddRows = false;
+
+
         }
+        public void Query()
+        {
+            using (SqlConnection conn = new SqlConnection(Sqllink))
+            {
+                conn.Open();
+                using (var reader = conn.ExecuteReader("Select * From Items"))
+                {
+                    itemsTable.Load(reader);
+                    dataGridView1.DataSource = itemsTable;
+                    dataGridView1.AllowUserToAddRows = false;
+
+                    // è®¾ç½®åˆ—æ’åºæ¨¡å¼
+                    //dataGridView1.Columns["MarketValue"].SortMode = DataGridViewColumnSortMode.Automatic;
+                    //dataGridView1.Columns["Quantity"].SortMode = DataGridViewColumnSortMode.Automatic;
+                }
+            }
+
+        }
+
+       
+
+        private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.ColumnIndex == 3 || e.ColumnIndex == 4)
+            {
+                // åˆ‡æ¢æ’åºæ–¹å‘
+                ListSortDirection direction = ListSortDirection.Ascending;
+
+                if (dataGridView1.SortOrder == System.Windows.Forms.SortOrder.Ascending || dataGridView1.SortOrder == System.Windows.Forms.SortOrder.None)
+                {
+                    direction = ListSortDirection.Descending;
+                }
+                else
+                {
+                    direction = ListSortDirection.Ascending;
+                }
+
+                // å¯¹è¯¥åˆ—è¿›è¡Œæ’åº
+                dataGridView1.Sort(dataGridView1.Columns[e.ColumnIndex], direction);
+            }
+
+        }
+
+       
     }
 }
