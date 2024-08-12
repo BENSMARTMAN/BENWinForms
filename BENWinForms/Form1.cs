@@ -244,37 +244,55 @@ namespace BENWinForms
                     itemsTable.Load(reader);
                     dataGridView1.DataSource = itemsTable;
                     dataGridView1.AllowUserToAddRows = false;
+                    // 設置所有列為不可排序
+                    foreach (DataGridViewColumn column in dataGridView1.Columns)
+                    {
+                        column.SortMode = DataGridViewColumnSortMode.NotSortable;
+                    }
+                    
+                    
 
-                    // 设置列排序模式
-                    //dataGridView1.Columns["ID"].SortMode = DataGridViewColumnSortMode.Automatic;
-                    //dataGridView1.Columns["Quantity"].SortMode = DataGridViewColumnSortMode.Automatic;
                 }
             }
 
         }
+        private DataGridViewColumn _sortedColumn = null;
+        private System.Windows.Forms.SortOrder _sortOrder = System.Windows.Forms.SortOrder.None;
 
 
 
         private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.ColumnIndex == 3 || e.ColumnIndex == 4)
+            // 確保 e.ColumnIndex 是有效的，並且 DataGridView 有資料
+            if (e.ColumnIndex >= 0 && dataGridView1.Rows.Count > 0)
             {
-                // 切换排序方向
-                ListSortDirection direction = ListSortDirection.Ascending;
+                // 獲取雙擊的列
+                DataGridViewColumn column = dataGridView1.Columns[e.ColumnIndex];
 
-                if (dataGridView1.SortOrder == System.Windows.Forms.SortOrder.Ascending || dataGridView1.SortOrder == System.Windows.Forms.SortOrder.None)
+                if (_sortedColumn == column)
                 {
-                    direction = ListSortDirection.Descending;
+                    // 同一列的雙擊
+                    if (_sortOrder == System.Windows.Forms.SortOrder.Ascending)
+                    {
+                        // 切換為降序排序
+                        _sortOrder = System.Windows.Forms.SortOrder.Descending;
+                        dataGridView1.Sort(column, System.ComponentModel.ListSortDirection.Descending);
+                    }
+                    else if (_sortOrder == System.Windows.Forms.SortOrder.Descending)
+                    {
+                        // 清除排序
+                        _sortOrder = System.Windows.Forms.SortOrder.None;
+                        dataGridView1.Sort(null, System.ComponentModel.ListSortDirection.Ascending); // Clear sorting
+                    }
                 }
                 else
                 {
-                    direction = ListSortDirection.Ascending;
+                    // 不同的列，設置為升序排序
+                    _sortedColumn = column;
+                    _sortOrder = System.Windows.Forms.SortOrder.Ascending;
+                    dataGridView1.Sort(column, System.ComponentModel.ListSortDirection.Ascending);
                 }
-
-                // 對指定列進行排序
-                dataGridView1.Sort(dataGridView1.Columns[e.ColumnIndex], direction);
             }
-
         }
 
         private void SearchBox_TextChanged(object sender, EventArgs e)
