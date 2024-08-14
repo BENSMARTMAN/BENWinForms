@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using Dapper;
 
 namespace BENWinForms
 {
@@ -39,16 +40,24 @@ namespace BENWinForms
                 try
                 {
                     conn.Open();
-                    string query = "SELECT * FROM Items WHERE (@name = '' OR Name LIKE '%' + @name + '%') AND (@type = '' OR Type LIKE '%' + @type + '%') AND (@description = '' OR Description LIKE '%' + @description + '%')";
-                    SqlCommand cmd = new SqlCommand(query, conn);
-                    cmd.Parameters.AddWithValue("@name", name);
-                    cmd.Parameters.AddWithValue("@description", description);
-                    cmd.Parameters.AddWithValue("@type", type);
-                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
-                    DataTable dt = new DataTable();
-                    adapter.Fill(dt);
+                    string query = @"
+                SELECT * FROM Items 
+                WHERE (@name = '' OR Name LIKE '%' + @name + '%') 
+                AND (@type = '' OR Type LIKE '%' + @type + '%') 
+                AND (@description = '' OR Description LIKE '%' + @description + '%')";
 
-                    Form1.UpdateDataGridView(dt);
+                    var parameters = new
+                    {
+                        name,
+                        description,
+                        type
+                    };
+
+                    // 使用 Dapper 执行查询并获取结果
+                    var itemsList = conn.Query<Items>(query, parameters).ToList();
+
+                    // 更新 Form1 的 DataGridView
+                    Form1.UpdateDataGridView(itemsList);
                     Close();
                 }
                 catch (Exception ex)

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -14,6 +15,7 @@ namespace BENWinForms
 {
     public partial class FormUpdate : Form
     {
+        public event Action OnDataUpdated;
         Items items;
         public FormUpdate(Items items)
         {
@@ -46,7 +48,7 @@ namespace BENWinForms
             string updatedQuantity = textBox4.Text; // Quantity
             string updatedType = textBox5.Text; // Type
             string ID = textBox6.Text; // ID
-            if (!decimal.TryParse(updatedMarketValue, out decimal marketValue) || marketValue <= 0 ||
+            if (!int.TryParse(updatedMarketValue, out int marketValue) || marketValue <= 0 ||
             !int.TryParse(updatedQuantity, out int quantity) || quantity <= 0)
             {
                 MessageBox.Show("價值或數量請輸入正數");
@@ -57,6 +59,9 @@ namespace BENWinForms
                 );
             conn.Close();
             MessageBox.Show("存檔成功");
+            // 触发事件，通知数据更新
+            OnDataUpdated?.Invoke();
+
             Close();
         }
 

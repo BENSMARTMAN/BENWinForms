@@ -12,9 +12,11 @@ namespace BENWinForms
     {
         public string ConnString { get; set; }
         private List<string> accountInfoList = new List<string>();
-        //private List<Items> items = new List<Items>();
-        private DataTable itemsTable = new DataTable();
-        string Sqllink = @"Server=192.168.1.9;Database=_SmartManTest;User Id=SYSADM;Password=SYSADM";
+        private List<Items> itemsList = new List<Items>();
+        //public event Action OnDataUpdated;
+        //private DataTable itemsTable = new DataTable();
+        string Sqllink = @"Server=127.0.0.1;Database=HRIS;User Id=SYSADM;Password=SYSADM";
+        
         public Form1()
         {
             InitializeComponent();
@@ -40,17 +42,14 @@ namespace BENWinForms
             // 將 TabControl 添加到窗體
             this.Controls.Add(tabControl);
         }
-
         private void label1_Click(object sender, EventArgs e)
         {
 
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
 
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
 
@@ -111,13 +110,10 @@ namespace BENWinForms
                     return "弱";
             }
         }
-
-
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
             int selectedIndex = listBox1.SelectedIndex;
@@ -131,7 +127,6 @@ namespace BENWinForms
 
             MessageBox.Show("移除成功!!!");
         }
-
         private void button3_Click(object sender, EventArgs e)
         {
             try
@@ -154,12 +149,11 @@ namespace BENWinForms
                 MessageBox.Show("發生錯誤: " + ex.Message + "哪裡錯?" + ex.StackTrace);
             }
         }
-
         private void button4_Click(object sender, EventArgs e)
         {
             Query();
+            SearchBox.Text = "";
         }
-
         private void button6_Click(object sender, EventArgs e)
         {
             // check if a row is selected
@@ -182,9 +176,13 @@ namespace BENWinForms
                 return;
             }
             FormUpdate formUpdate = new FormUpdate(items);
+            // 订阅事件
+            formUpdate.OnDataUpdated += () =>
+            {
+                Query(); // 重新加载数据
+            };
             formUpdate.ShowDialog();
         }
-
         private void button7_Click(object sender, EventArgs e)
         {
             // check if a row is selected
@@ -207,94 +205,106 @@ namespace BENWinForms
             SqlConnection conn = new SqlConnection(ConnString);
             conn.Execute("Delete From Items Where Id = @ID", new { Id });
             MessageBox.Show("刪除成功");
+            Query();
             conn.Close();
         }
-
         private void button5_Click(object sender, EventArgs e)
         {
             Items items = new Items();
             FormNew formNew = new FormNew(items);
+            formNew.OnDataUpdated += () =>
+            {
+                Query(); // 重新加载数据
+            };
             formNew.ShowDialog();
         }
-
         private void button8_Click(object sender, EventArgs e)
         {
             FormSearch FormSearch = new FormSearch(this);
             FormSearch.Show();
         }
-        public void UpdateDataGridView(DataTable dataTable)
+        public void UpdateDataGridView(List<Items> itemsList)
         {
 
-            dataGridView1.DataSource = dataTable;
+            dataGridView1.DataSource = new BindingList<Items>(itemsList);
             dataGridView1.AllowUserToAddRows = false;
 
 
         }
         public void Query()
         {
-            itemsTable.Clear();
-            itemsTable.DefaultView.RowFilter = string.Empty;
-            itemsTable.DefaultView.Sort = string.Empty;
-            SearchBox.Text = string.Empty;
-            using (SqlConnection conn = new SqlConnection(Sqllink))
-            {
+           SqlConnection conn = new SqlConnection();
+                conn.ConnectionString = @"
+                        Server=127.0.0.1;
+                        Database=HRIS;
+                        User Id=SYSADM;
+                        Password=SYSADM";
+                this.ConnString = conn.ConnectionString;
+                ItemsService.ConnString = conn.ConnectionString;
                 conn.Open();
-                using (var reader = conn.ExecuteReader("Select * From Items"))
-                {
-                    itemsTable.Load(reader);
-                    dataGridView1.DataSource = itemsTable;
-                    dataGridView1.AllowUserToAddRows = false;
-                    // 設置所有列為不可排序
-                    foreach (DataGridViewColumn column in dataGridView1.Columns)
-                    {
-                        column.SortMode = DataGridViewColumnSortMode.NotSortable;
-                    }
-                    
-                    
 
-                }
-            }
+                // 使用 Dapper 查询并映射到 Items 列表
+                string query = "SELECT * FROM Items";
+                itemsList = conn.Query<Items>(query).ToList();
+            
+
+            // 将列表绑定到 DataGridView
+            dataGridView1.DataSource = new BindingList<Items>(itemsList);
+            dataGridView1.AllowUserToAddRows = false;
 
         }
-        private DataGridViewColumn _sortedColumn = null;
-        private System.Windows.Forms.SortOrder _sortOrder = System.Windows.Forms.SortOrder.None;
-
-
-
+        private string lastSortedColumn = string.Empty;
+        private bool ascending = true;
         private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            // 確保 e.ColumnIndex 是有效的，並且 DataGridView 有資料
-            if (e.ColumnIndex >= 0 && dataGridView1.Rows.Count > 0)
+            string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
+
+            if (lastSortedColumn == columnName)
             {
-                // 獲取雙擊的列
-                DataGridViewColumn column = dataGridView1.Columns[e.ColumnIndex];
-
-                if (_sortedColumn == column)
-                {
-                    // 同一列的雙擊
-                    if (_sortOrder == System.Windows.Forms.SortOrder.Ascending)
-                    {
-                        // 切換為降序排序
-                        _sortOrder = System.Windows.Forms.SortOrder.Descending;
-                        dataGridView1.Sort(column, System.ComponentModel.ListSortDirection.Descending);
-                    }
-                    else if (_sortOrder == System.Windows.Forms.SortOrder.Descending)
-                    {
-                        // 清除排序
-                        _sortOrder = System.Windows.Forms.SortOrder.None;
-                        dataGridView1.Sort(null, System.ComponentModel.ListSortDirection.Ascending); // Clear sorting
-                    }
-                }
-                else
-                {
-                    // 不同的列，設置為升序排序
-                    _sortedColumn = column;
-                    _sortOrder = System.Windows.Forms.SortOrder.Ascending;
-                    dataGridView1.Sort(column, System.ComponentModel.ListSortDirection.Ascending);
-                }
+                ascending = !ascending;
             }
-        }
+            else
+            {
+                ascending = true;
+                lastSortedColumn = columnName;
+            }
 
+            switch (columnName)
+            {
+                case "Name":
+                    itemsList = ascending ?
+                                itemsList.OrderBy(item => item.Name).ToList() :
+                                itemsList.OrderByDescending(item => item.Name).ToList();
+                    break;
+                case "Description":
+                    itemsList = ascending ?
+                                itemsList.OrderBy(item => item.Description).ToList() :
+                                itemsList.OrderByDescending(item => item.Description).ToList();
+                    break;
+                case "MarketValue":
+                    itemsList = ascending ?
+                                itemsList.OrderBy(item => item.MarketValue).ToList() :
+                                itemsList.OrderByDescending(item => item.MarketValue).ToList();
+                    break;
+                case "Quantity":
+                    itemsList = ascending ?
+                                itemsList.OrderBy(item => item.Quantity).ToList() :
+                                itemsList.OrderByDescending(item => item.Quantity).ToList();
+                    break;
+                case "Type":
+                    itemsList = ascending ?
+                                itemsList.OrderBy(item => item.Type).ToList() :
+                                itemsList.OrderByDescending(item => item.Type).ToList();
+                    break;
+                default:
+                    break;
+            }
+
+            // 更新 DataGridView 的数据源
+            dataGridView1.DataSource = new BindingList<Items>(itemsList);
+
+
+        }
         private void SearchBox_TextChanged(object sender, EventArgs e)
         {
             string filterText = SearchBox.Text;
@@ -302,13 +312,19 @@ namespace BENWinForms
             if (string.IsNullOrEmpty(filterText))
             {
                 // 如果搜尋框是空的，顯示所有資料
-                (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = string.Empty;
+                dataGridView1.DataSource = new BindingList<Items>(itemsList);
             }
             else
             {
                 // 根據輸入內容進行條件搜尋
-                string filterExpression = $"Name LIKE '%{filterText}%' OR Type LIKE '%{filterText}%' OR Description LIKE '%{filterText}%'";
-                (dataGridView1.DataSource as DataTable).DefaultView.RowFilter = filterExpression;
+                var filteredList = itemsList.Where(item =>
+                    item.Name.Contains(filterText, StringComparison.OrdinalIgnoreCase) ||
+                    item.Type.Contains(filterText, StringComparison.OrdinalIgnoreCase) ||
+                    item.Description.Contains(filterText, StringComparison.OrdinalIgnoreCase)
+                ).ToList();
+
+                // 更新 DataGridView 的数据源
+                dataGridView1.DataSource = new BindingList<Items>(filteredList);
             }
         }
     }

@@ -15,6 +15,7 @@ namespace BENWinForms
 {
     public partial class FormNew : Form
     {
+        public event Action OnDataUpdated;
         Items items;
         public FormNew(Items items)
         {
@@ -55,6 +56,8 @@ namespace BENWinForms
                 );
             conn.Close();
             MessageBox.Show("存檔成功");
+            // 触发事件，通知数据更新
+            OnDataUpdated?.Invoke();
             Close();
 
         }
