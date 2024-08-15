@@ -15,7 +15,7 @@ namespace BENWinForms
         private List<Items> itemsList = new List<Items>();
         //public event Action OnDataUpdated;
         //private DataTable itemsTable = new DataTable();
-        string Sqllink = @"Server=127.0.0.1;Database=HRIS;User Id=SYSADM;Password=SYSADM";
+        string Sqllink = @"Server=192.168.1.9;Database=_SmartManTest;User Id=SYSADM;Password=SYSADM";
         
         public Form1()
         {
@@ -235,8 +235,8 @@ namespace BENWinForms
         {
            SqlConnection conn = new SqlConnection();
                 conn.ConnectionString = @"
-                        Server=127.0.0.1;
-                        Database=HRIS;
+                        Server=192.168.1.9;
+                        Database=_SmartManTest;
                         User Id=SYSADM;
                         Password=SYSADM";
                 this.ConnString = conn.ConnectionString;
@@ -253,10 +253,10 @@ namespace BENWinForms
             dataGridView1.AllowUserToAddRows = false;
 
         }
-        private string lastSortedColumn = string.Empty;
-        private bool ascending = true;
         private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            string lastSortedColumn = string.Empty;
+            bool ascending = true;
             string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
 
             if (lastSortedColumn == columnName)
