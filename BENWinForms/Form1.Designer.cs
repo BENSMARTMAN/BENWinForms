@@ -45,6 +45,9 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             dataGridView1 = new DataGridView();
             panel1 = new Panel();
+            buttonDeleteSelected = new Button();
+            button10 = new Button();
+            button9 = new Button();
             SearchBox = new TextBox();
             button3 = new Button();
             button8 = new Button();
@@ -225,6 +228,9 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(buttonDeleteSelected);
+            panel1.Controls.Add(button10);
+            panel1.Controls.Add(button9);
             panel1.Controls.Add(SearchBox);
             panel1.Controls.Add(button3);
             panel1.Controls.Add(button8);
@@ -238,6 +244,35 @@
             panel1.Size = new Size(1064, 177);
             panel1.TabIndex = 2;
             // 
+            // buttonDeleteSelected
+            // 
+            buttonDeleteSelected.Location = new Point(619, 11);
+            buttonDeleteSelected.Name = "buttonDeleteSelected";
+            buttonDeleteSelected.Size = new Size(136, 44);
+            buttonDeleteSelected.TabIndex = 10;
+            buttonDeleteSelected.Text = "批次刪除";
+            buttonDeleteSelected.UseVisualStyleBackColor = true;
+            buttonDeleteSelected.Click += buttonDeleteSelected_Click;
+            // 
+            // button10
+            // 
+            button10.Location = new Point(477, 65);
+            button10.Name = "button10";
+            button10.Size = new Size(136, 39);
+            button10.TabIndex = 9;
+            button10.Text = "資料匯出";
+            button10.UseVisualStyleBackColor = true;
+            button10.Click += button10_Click;
+            // 
+            // button9
+            // 
+            button9.Location = new Point(477, 11);
+            button9.Name = "button9";
+            button9.Size = new Size(136, 42);
+            button9.TabIndex = 8;
+            button9.Text = "資料匯入";
+            button9.UseVisualStyleBackColor = true;
+            // 
             // SearchBox
             // 
             SearchBox.Font = new Font("微軟正黑體", 16.2F, FontStyle.Regular, GraphicsUnit.Point, 136);
@@ -245,7 +280,6 @@
             SearchBox.Name = "SearchBox";
             SearchBox.Size = new Size(459, 43);
             SearchBox.TabIndex = 7;
-            SearchBox.TextChanged += SearchBox_TextChanged;
             // 
             // button3
             // 
@@ -355,5 +389,8 @@
         private TableLayoutPanel tableLayoutPanel1;
         private Panel panel1;
         private TextBox SearchBox;
+        private Button buttonDeleteSelected;
+        private Button button10;
+        private Button button9;
     }
 }

@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Dapper;
+using Microsoft.VisualBasic.Devices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace BENWinForms
@@ -15,13 +16,21 @@ namespace BENWinForms
         private List<Items> itemsList = new List<Items>();
         //public event Action OnDataUpdated;
         //private DataTable itemsTable = new DataTable();
+        private SqlConnection GetDatabaseConnection()
+        {
+            var connectionString = "Server=127.0.0.1;Database=HRIS;User Id=SYSADM;Password=SYSADM";
+            var connection = new SqlConnection(connectionString);
+            connection.Open();
+            return connection;
+        }
         string Sqllink = @"Server=192.168.1.9;Database=_SmartManTest;User Id=SYSADM;Password=SYSADM";
-        
+
         public Form1()
         {
             InitializeComponent();
-            dataGridView1.ColumnHeaderMouseDoubleClick += dataGridView1_ColumnHeaderMouseDoubleClick;
+            //dataGridView1.ColumnHeaderMouseDoubleClick += dataGridView1_ColumnHeaderMouseDoubleClick;
             SearchBox.TextChanged += SearchBox_TextChanged;
+            button9.Click += button9_Click;
 
             // 創建 TabControl
             TabControl tabControl = new TabControl();
@@ -233,68 +242,93 @@ namespace BENWinForms
         }
         public void Query()
         {
-           SqlConnection conn = new SqlConnection();
-                conn.ConnectionString = @"
-                        Server=192.168.1.9;
-                        Database=_SmartManTest;
-                        User Id=SYSADM;
-                        Password=SYSADM";
-                this.ConnString = conn.ConnectionString;
-                ItemsService.ConnString = conn.ConnectionString;
-                conn.Open();
+            SqlConnection conn = new SqlConnection();
+            //conn.ConnectionString = @"Server=192.168.1.9;Database=_SmartManTest;User Id=SYSADM;Password=SYSADM";
+            conn.ConnectionString = @"Server=127.0.0.1;Database=HRIS;User Id=SYSADM;Password=SYSADM";
+            this.ConnString = conn.ConnectionString;
+            ItemsService.ConnString = conn.ConnectionString;
+            conn.Open();
 
-                // 使用 Dapper 查询并映射到 Items 列表
-                string query = "SELECT * FROM Items";
-                itemsList = conn.Query<Items>(query).ToList();
-            
+            // 使用 Dapper 查询并映射到 Items 列表
+            string query = "SELECT * FROM Items";
+            itemsList = conn.Query<Items>(query).ToList();
+
 
             // 将列表绑定到 DataGridView
             dataGridView1.DataSource = new BindingList<Items>(itemsList);
             dataGridView1.AllowUserToAddRows = false;
+            AddCheckBoxColumn();
 
         }
+        private void LoadData()
+        {
+            // 使用 Dapper 從資料庫中加載數據
+            using (var connection = GetDatabaseConnection())
+            {
+                var query = "SELECT * FROM Items";  // 根據實際情況修改表名稱
+                var items = connection.Query<Items>(query).ToList();
+                
+
+                // 清除之前的資料
+                dataGridView1.DataSource = null;
+
+                // 綁定新的資料
+                dataGridView1.DataSource = items;
+                AddCheckBoxColumn();
+            }
+        }
+        bool[] isAscendingFlags = [false, false, false, false, false, false, false, false];
         private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             string lastSortedColumn = string.Empty;
-            bool ascending = true;
+            //bool ascending = true;
+            //五個欄位是否升冪排序flag
             string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
 
-            if (lastSortedColumn == columnName)
-            {
-                ascending = !ascending;
-            }
-            else
-            {
-                ascending = true;
-                lastSortedColumn = columnName;
-            }
+            //if (lastSortedColumn == columnName)
+            //{
+            //ascending = !ascending;
+            //}
+            //else
+            //{
+            //ascending = true;
+            //lastSortedColumn = columnName;
+            //}
+            isAscendingFlags[e.ColumnIndex] = !isAscendingFlags[e.ColumnIndex];
+            bool isAscending = isAscendingFlags[e.ColumnIndex];
 
             switch (columnName)
             {
+           
                 case "Name":
-                    itemsList = ascending ?
+                    itemsList = isAscending ?
                                 itemsList.OrderBy(item => item.Name).ToList() :
                                 itemsList.OrderByDescending(item => item.Name).ToList();
                     break;
                 case "Description":
-                    itemsList = ascending ?
+                    itemsList = isAscending ?
                                 itemsList.OrderBy(item => item.Description).ToList() :
                                 itemsList.OrderByDescending(item => item.Description).ToList();
                     break;
                 case "MarketValue":
-                    itemsList = ascending ?
-                                itemsList.OrderBy(item => item.MarketValue).ToList() :
-                                itemsList.OrderByDescending(item => item.MarketValue).ToList();
+                    itemsList = isAscending ?
+                                itemsList.OrderBy(item => int.Parse(item.MarketValue)).ToList() :
+                                itemsList.OrderByDescending(item => int.Parse(item.MarketValue)).ToList();
                     break;
                 case "Quantity":
-                    itemsList = ascending ?
-                                itemsList.OrderBy(item => item.Quantity).ToList() :
-                                itemsList.OrderByDescending(item => item.Quantity).ToList();
+                    itemsList = isAscending ?
+                               itemsList.OrderBy(item => int.Parse(item.Quantity)).ToList() :
+                               itemsList.OrderByDescending(item => int.Parse(item.Quantity)).ToList();
                     break;
                 case "Type":
-                    itemsList = ascending ?
+                    itemsList = isAscending ?
                                 itemsList.OrderBy(item => item.Type).ToList() :
                                 itemsList.OrderByDescending(item => item.Type).ToList();
+                    break;
+                case "LastUpdated":
+                    itemsList = isAscending ?
+                                itemsList.OrderBy(item => item.LastUpdated).ToList() :
+                                itemsList.OrderByDescending(item => item.LastUpdated).ToList();
                     break;
                 default:
                     break;
@@ -327,5 +361,130 @@ namespace BENWinForms
                 dataGridView1.DataSource = new BindingList<Items>(filteredList);
             }
         }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "CSV files (*.csv)|*.csv";
+            var result = saveFileDialog.ShowDialog();
+            List<string> lines = new List<string>();
+            if (result == DialogResult.OK)
+            {
+                string filePath = saveFileDialog.FileName;
+                lines.Append("項次,名稱,描述,價值,數量,種類");
+                foreach (var item in itemsList)
+                {
+                    string singleLineData = item.Id + "," + item.Name + "," + item.Description + "," +
+                        item.MarketValue + "," + item.Quantity.ToString() + "," + item.Type;
+                    lines.Add(singleLineData);
+
+                }
+                File.WriteAllLines(filePath, lines);
+                MessageBox.Show("儲存到" + filePath + "了");
+            }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "CSV 檔案 (*.csv)|*.csv";
+            var result = openFileDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+            {
+                // 讀取 CSV 檔案的所有行
+                string[] lines = File.ReadAllLines(openFileDialog.FileName);
+                using (var connection = GetDatabaseConnection())
+                {
+
+                    // 解析每行數據，並將其加入 itemsList
+                    foreach (string line in lines)
+                    {
+                        var splitData = line.Split(",");
+
+                        // 設定每個項目的屬性
+                        Items item = new Items
+                        {
+                            Name = splitData[1],
+                            Description = splitData[2],
+                            MarketValue = splitData[3],
+                            Quantity = splitData[4],
+                            Type = splitData[5],
+                            //LastUpdated = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")  // 更新時間
+                        };
+
+                        // 使用 Dapper 來執行 INSERT 操作，ID 會自動生成
+                        var query = @"INSERT INTO Items (Name, Description, MarketValue, Quantity, Type, LastUpdated) 
+                                    VALUES( @Name, @Description, @MarketValue, @Quantity, @Type, GETDATE());";
+                        connection.Execute(query, item);
+
+                        // 也可將新增的項目加入到 itemsList 中
+                        itemsList.Add(item);
+                    }
+
+                    // 因為 DataGridView 綁定的是 itemsList，所以只需要更新綁定
+                    dataGridView1.DataSource = null;  // 重新綁定前，解除綁定
+                    dataGridView1.DataSource = itemsList;  // 重新綁定到更新後的 itemsList
+                }
+            }
+
+
+        }
+        private void AddCheckBoxColumn()
+        {
+            // 確認 DataGridView 中是否已經存在 CheckBox 欄位
+            if (!dataGridView1.Columns.Contains("chkColumn"))
+            {
+                DataGridViewCheckBoxColumn chkColumn = new DataGridViewCheckBoxColumn();
+                chkColumn.HeaderText = "選取";
+                chkColumn.Name = "chkColumn";
+                dataGridView1.Columns.Add(chkColumn);
+            }
+        }
+
+        private void buttonDeleteSelected_Click(object sender, EventArgs e)
+        {
+            // 確認使用者是否確定要刪除
+            var confirmResult = MessageBox.Show("確定要刪除選取的資料嗎？",
+                                                "批次刪除確認",
+                                                MessageBoxButtons.YesNo);
+            if (confirmResult == DialogResult.Yes)
+            {
+                List<string> selectedIds = new List<string>();
+
+                // 蒐集選中的行的 ID
+                foreach (DataGridViewRow row in dataGridView1.Rows)
+                {
+                    DataGridViewCheckBoxCell chkCell = row.Cells["chkColumn"] as DataGridViewCheckBoxCell;
+
+                    if (chkCell != null && Convert.ToBoolean(chkCell.Value))
+                    {
+                        var itemId = row.Cells["Id"].Value.ToString();
+                        selectedIds.Add(itemId);
+                    }
+                }
+
+                if (selectedIds.Count > 0)
+                {
+                    // 從資料庫中刪除選取的項目
+                    using (var connection = GetDatabaseConnection())
+                    {
+                        // 使用 SQL 中的 IN 子句來一次刪除多個項目
+                        var deleteQuery = "DELETE FROM Items WHERE Id IN @Ids";
+                        connection.Execute(deleteQuery, new { Ids = selectedIds });
+
+                        // 更新 DataGridView 的資料來源
+                        LoadData();
+                    }
+
+                    MessageBox.Show("選取的資料已成功刪除");
+                }
+                else
+                {
+                    MessageBox.Show("請選取至少一筆資料進行刪除");
+                }
+            }
+        }
     }
 }
+
