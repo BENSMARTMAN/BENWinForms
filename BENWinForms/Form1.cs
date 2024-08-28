@@ -284,7 +284,7 @@ namespace BENWinForms
             //bool ascending = true;
             //五個欄位是否升冪排序flag
             string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
-            //
+            
             //if (lastSortedColumn == columnName)
             //{
             //ascending = !ascending;
