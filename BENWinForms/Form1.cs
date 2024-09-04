@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using BENWinForms.DatsModels;
 using Dapper;
 using Microsoft.VisualBasic.Devices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -267,7 +269,7 @@ namespace BENWinForms
             {
                 var query = "SELECT * FROM Items";  // 根據實際情況修改表名稱
                 var items = connection.Query<Items>(query).ToList();
-                
+
 
                 // 清除之前的資料
                 dataGridView1.DataSource = null;
@@ -284,7 +286,7 @@ namespace BENWinForms
             //bool ascending = true;
             //五個欄位是否升冪排序flag
             string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
-            
+
             //if (lastSortedColumn == columnName)
             //{
             //ascending = !ascending;
@@ -299,7 +301,7 @@ namespace BENWinForms
 
             switch (columnName)
             {
-           
+
                 case "Name":
                     itemsList = isAscending ?
                                 itemsList.OrderBy(item => item.Name).ToList() :
@@ -484,6 +486,54 @@ namespace BENWinForms
                     MessageBox.Show("請選取至少一筆資料進行刪除");
                 }
             }
+        }
+
+        private void button11_Click(object sender, EventArgs e)
+        {
+            List<string> headerNames = ["項次","名稱","描述","價值","數量","種類"];
+            for (int i = 0; i < headerNames.Count; i++)
+            {
+                dataGridView1.Columns[i].HeaderText = headerNames[i];
+            }
+            using (ClosedXML.Excel.XLWorkbook workbook = new ClosedXML.Excel.XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("原始物品資料");
+                for (int i = 0; i < headerNames.Count; i++)
+                {
+                    worksheet.Cell(1, i + 1).Value = headerNames[i];
+                }
+                worksheet.Cell(2, 1).InsertData(itemsList);
+                var worksheet2 = workbook.Worksheets.Add("價值前三高物品");
+                var top3 = itemsList.OrderByDescending(p => int.Parse(p.MarketValue)).Take(3).ToList();
+                worksheet2.Cell(1, 1).Value = "項次";
+                worksheet2.Cell(1, 2).Value = "名稱";
+                worksheet2.Cell(1, 3).Value = "價值";
+                for (int i = 0; i < top3.Count; i++)
+                {
+                    worksheet2.Cell(i + 2, 1).Value = top3[i].Id;
+                    worksheet2.Cell(i + 2, 2).Value = top3[i].Name;
+                    worksheet2.Cell(i + 2, 3).Value = top3[i].MarketValue;
+                }
+                var groupByArea = itemsList.GroupBy(p => p.Type);
+                foreach (var group in groupByArea)
+                {
+                    var worksheetByArea = workbook.Worksheets.Add(group.Key);
+                    var parkLotsByArea = group.ToList();
+                    for (int i = 0; i < headerNames.Count; i++)
+                    {
+                        worksheetByArea.Cell(1, i + 1).Value = headerNames[i];
+                    }
+                    worksheetByArea.Cell(2, 1).InsertData(parkLotsByArea);
+                }
+                workbook.SaveAs("Summary.xlsx");
+                ProcessStartInfo psi = new ProcessStartInfo()
+                {
+                    FileName = "Summary.xlsx",
+                    UseShellExecute = true,
+                };
+                System.Diagnostics.Process.Start(psi);
+            }
+            MessageBox.Show("下載成功");
         }
     }
 }

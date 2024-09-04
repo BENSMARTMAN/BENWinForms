@@ -15,11 +15,14 @@ namespace BENWinForms
 {
     public partial class FormInternet : Form
     {
+        
+
         public List<StockData> StockDatas { get; set; } = new List<StockData>();
         public List<OfficialData> OfficialData { get; set; } = new List<OfficialData>();
         public FormInternet()
         {
             InitializeComponent();
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -195,20 +198,29 @@ namespace BENWinForms
             {
                 // using在這裡代表程式結束後會對資源釋放
                 using (var workbook = new XLWorkbook())
-                {
+                {   
                     // 新增一個活頁 (worksheeet)
                     var worksheet = workbook.Worksheets.Add("113年淡水區公告土地現值及地價");
-                    // 把標頭寫到A1 ~ E1儲存格
+                    // 方法一:把標頭寫到A1 ~ E1儲存格
                     worksheet.Cell("A1").Value = "縣市別";
                     worksheet.Cell("B1").Value = "行政區";
                     worksheet.Cell("C1").Value = "段小段";
                     worksheet.Cell("D1").Value = "地號";
                     worksheet.Cell("E1").Value = "公告土地現值";
                     worksheet.Cell("F1").Value = "公告地價";
-                    // 針對股票物件陣列去跑迴圈
+
+                    //方法二:陣列設標頭名稱
+                    //List<string> headerNames = ["縣市別", "行政區", "段小段", "地號", "公告土地現值", "公告地價"];
+                    //// set datagridview header names to above
+                    //for (int i = 0; i < headerNames.Count; i++)
+                    //{
+                    //    dataGridView1.Columns[i].HeaderText = headerNames[i];
+                    //}
+
+                    // 針對物件陣列去跑迴圈
                     for (int i = 0; i < OfficialData.Count; i++)
                     {
-                        // 目前迴圈當前的股票物件 (第i個資料列)
+                        // 目前迴圈當前的物件 (第i個資料列)
                         var official = OfficialData[i];
                         // 把每筆資料塞到目前Excel中的資料列 Cell(水平列位置、垂直欄位位置) 記得Excel起始值是從1開始不是0。
                         worksheet.Cell(i + 2, 1).Value = official.country;

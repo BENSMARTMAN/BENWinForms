@@ -45,6 +45,7 @@
             tableLayoutPanel1 = new TableLayoutPanel();
             dataGridView1 = new DataGridView();
             panel1 = new Panel();
+            button11 = new Button();
             buttonDeleteSelected = new Button();
             button10 = new Button();
             button9 = new Button();
@@ -196,7 +197,7 @@
             tabPage2.Padding = new Padding(3);
             tabPage2.Size = new Size(1076, 557);
             tabPage2.TabIndex = 1;
-            tabPage2.Text = "作業二";
+            tabPage2.Text = "作業二、八";
             tabPage2.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel1
@@ -228,6 +229,7 @@
             // 
             // panel1
             // 
+            panel1.Controls.Add(button11);
             panel1.Controls.Add(buttonDeleteSelected);
             panel1.Controls.Add(button10);
             panel1.Controls.Add(button9);
@@ -243,6 +245,16 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(1064, 177);
             panel1.TabIndex = 2;
+            // 
+            // button11
+            // 
+            button11.Location = new Point(620, 65);
+            button11.Name = "button11";
+            button11.Size = new Size(135, 39);
+            button11.TabIndex = 11;
+            button11.Text = "資料彙整下載";
+            button11.UseVisualStyleBackColor = true;
+            button11.Click += button11_Click;
             // 
             // buttonDeleteSelected
             // 
@@ -392,5 +404,6 @@
         private Button buttonDeleteSelected;
         private Button button10;
         private Button button9;
+        private Button button11;
     }
 }
