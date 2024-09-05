@@ -20,7 +20,8 @@ namespace BENWinForms
         //private DataTable itemsTable = new DataTable();
         private SqlConnection GetDatabaseConnection()
         {
-            var connectionString = "Server=127.0.0.1;Database=HRIS;User Id=SYSADM;Password=SYSADM";
+            //var connectionString = "Server=127.0.0.1;Database=HRIS;User Id=SYSADM;Password=SYSADM";
+            var connectionString = "Server=192.168.1.9;Database=_SmartManTest;User Id=SYSADM;Password=SYSADM";
             var connection = new SqlConnection(connectionString);
             connection.Open();
             return connection;
@@ -245,8 +246,8 @@ namespace BENWinForms
         public void Query()
         {
             SqlConnection conn = new SqlConnection();
-            //conn.ConnectionString = @"Server=192.168.1.9;Database=_SmartManTest;User Id=SYSADM;Password=SYSADM";
-            conn.ConnectionString = @"Server=127.0.0.1;Database=HRIS;User Id=SYSADM;Password=SYSADM";
+            conn.ConnectionString = @"Server=192.168.1.9;Database=_SmartManTest;User Id=SYSADM;Password=SYSADM";
+            //conn.ConnectionString = @"Server=127.0.0.1;Database=HRIS;User Id=SYSADM;Password=SYSADM";
             this.ConnString = conn.ConnectionString;
             ItemsService.ConnString = conn.ConnectionString;
             conn.Open();
@@ -490,7 +491,7 @@ namespace BENWinForms
 
         private void button11_Click(object sender, EventArgs e)
         {
-            List<string> headerNames = ["項次","名稱","描述","價值","數量","種類"];
+            List<string> headerNames = ["項次","名稱","描述","價值","數量","種類","最後更新日"];
             for (int i = 0; i < headerNames.Count; i++)
             {
                 dataGridView1.Columns[i].HeaderText = headerNames[i];
