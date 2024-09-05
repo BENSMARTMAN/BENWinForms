@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using BENWinForms.DatsModels;
+using ClosedXML.Excel;
 using Dapper;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.VisualBasic.Devices;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -33,7 +35,7 @@ namespace BENWinForms
             InitializeComponent();
             //dataGridView1.ColumnHeaderMouseDoubleClick += dataGridView1_ColumnHeaderMouseDoubleClick;
             SearchBox.TextChanged += SearchBox_TextChanged;
-            button9.Click += button9_Click;
+            buttonOpenFile.Click += buttonOpenFile_Click;
 
             // 創建 TabControl
             TabControl tabControl = new TabControl();
@@ -62,7 +64,7 @@ namespace BENWinForms
         {
 
         }
-        private void button1_Click(object sender, EventArgs e)
+        private void buttonSave_Click(object sender, EventArgs e)
         {
 
             string account = textBox1.Text;
@@ -126,7 +128,7 @@ namespace BENWinForms
         {
 
         }
-        private void button2_Click(object sender, EventArgs e)
+        private void buttonDelete_Click(object sender, EventArgs e)
         {
             int selectedIndex = listBox1.SelectedIndex;
             if (selectedIndex == -1)
@@ -139,7 +141,7 @@ namespace BENWinForms
 
             MessageBox.Show("移除成功!!!");
         }
-        private void button3_Click(object sender, EventArgs e)
+        private void buttonConnection_Click(object sender, EventArgs e)
         {
             try
             {
@@ -161,12 +163,12 @@ namespace BENWinForms
                 MessageBox.Show("發生錯誤: " + ex.Message + "哪裡錯?" + ex.StackTrace);
             }
         }
-        private void button4_Click(object sender, EventArgs e)
+        private void buttonDataShow_Click(object sender, EventArgs e)
         {
             Query();
             SearchBox.Text = "";
         }
-        private void button6_Click(object sender, EventArgs e)
+        private void buttonUpdate_Click(object sender, EventArgs e)
         {
             // check if a row is selected
             bool isSelected = dataGridView1.SelectedRows.Count > 0;
@@ -195,7 +197,7 @@ namespace BENWinForms
             };
             formUpdate.ShowDialog();
         }
-        private void button7_Click(object sender, EventArgs e)
+        private void buttonRemove_Click(object sender, EventArgs e)
         {
             // check if a row is selected
             bool isSelected = dataGridView1.SelectedRows.Count > 0;
@@ -220,7 +222,7 @@ namespace BENWinForms
             Query();
             conn.Close();
         }
-        private void button5_Click(object sender, EventArgs e)
+        private void buttonNew_Click(object sender, EventArgs e)
         {
             Items items = new Items();
             FormNew formNew = new FormNew(items);
@@ -230,7 +232,7 @@ namespace BENWinForms
             };
             formNew.ShowDialog();
         }
-        private void button8_Click(object sender, EventArgs e)
+        private void buttonSearch_Click(object sender, EventArgs e)
         {
             FormSearch FormSearch = new FormSearch(this);
             FormSearch.Show();
@@ -365,7 +367,7 @@ namespace BENWinForms
             }
         }
 
-        private void button10_Click(object sender, EventArgs e)
+        private void buttonCreateFile_Click(object sender, EventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = "CSV files (*.csv)|*.csv";
@@ -387,7 +389,7 @@ namespace BENWinForms
             }
         }
 
-        private void button9_Click(object sender, EventArgs e)
+        private void buttonOpenFile_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "CSV 檔案 (*.csv)|*.csv";
@@ -489,7 +491,7 @@ namespace BENWinForms
             }
         }
 
-        private void button11_Click(object sender, EventArgs e)
+        private void buttonDLtoExcel_Click(object sender, EventArgs e)
         {
             List<string> headerNames = ["項次","名稱","描述","價值","數量","種類","最後更新日"];
             for (int i = 0; i < headerNames.Count; i++)
@@ -500,10 +502,7 @@ namespace BENWinForms
             using (ClosedXML.Excel.XLWorkbook workbook = new ClosedXML.Excel.XLWorkbook())
             {
                 var worksheet = workbook.Worksheets.Add("原始物品資料");
-                for (int i = 0; i < headerNames.Count; i++)
-                {
-                    worksheet.Cell(1, i + 1).Value = headerNames[i];
-                }
+                SetHeaderStyle(worksheet, headerNames); // 呼叫函數設置表頭樣式
                 // 設置MarketValue欄位為數字格式，右對齊並設置為貨幣格式
                 for (int row = 2; row <= itemsList.Count + 1; row++)
                 {
@@ -516,14 +515,16 @@ namespace BENWinForms
                         worksheet.Cell(row, 4).Style.NumberFormat.Format = "$#,##0";
                     }
                 }
+                //worksheet.Columns().AdjustToContents(); // 根據內容自動調整所有欄位寬度
 
                 worksheet.Cell(2, 1).InsertData(itemsList);
                 var worksheet2 = workbook.Worksheets.Add("價值前三高物品");
+                SetHeaderStyle(worksheet2, new List<string> { "項次", "名稱", "數量", "價值" }); // 設置不同標題
                 var top3 = itemsList.OrderByDescending(p => int.Parse(p.MarketValue)).Take(3).ToList();
-                worksheet2.Cell(1, 1).Value = "項次";
-                worksheet2.Cell(1, 2).Value = "名稱";
-                worksheet2.Cell(1, 3).Value = "數量";
-                worksheet2.Cell(1, 4).Value = "價值";
+                //worksheet2.Cell(1, 1).Value = "項次";
+                //worksheet2.Cell(1, 2).Value = "名稱";
+                //worksheet2.Cell(1, 3).Value = "數量";
+                //worksheet2.Cell(1, 4).Value = "價值";
                 for (int i = 0; i < top3.Count; i++)
                 {
                     worksheet2.Cell(i + 2, 1).Value = top3[i].Id;
@@ -554,6 +555,7 @@ namespace BENWinForms
                 foreach (var group in groupByArea)
                 {
                     var worksheetByArea = workbook.Worksheets.Add(group.Key);
+                    SetHeaderStyle(worksheetByArea, headerNames); // 呼叫函數設置表頭樣式
                     var itemsByType = group.ToList();
                     for (int i = 0; i < headerNames.Count; i++)
                     {
@@ -593,6 +595,21 @@ namespace BENWinForms
             }
             MessageBox.Show("下載成功");
         }
+        public void SetHeaderStyle(IXLWorksheet worksheet, List<string> headerNames)
+        {
+            for (int i = 0; i < headerNames.Count; i++)
+            {
+                var header = worksheet.Cell(1, i + 1);
+                header.Value = headerNames[i];
+                header.Style.Alignment.Horizontal = ClosedXML.Excel.XLAlignmentHorizontalValues.Center; // 文字置中
+                header.Style.Fill.BackgroundColor = ClosedXML.Excel.XLColor.Aqua; // 底色設為青色
+                // 加上框線
+                header.Style.Border.OutsideBorder = ClosedXML.Excel.XLBorderStyleValues.Thin;
+                header.Style.Border.OutsideBorderColor = ClosedXML.Excel.XLColor.Black;
+            }
+            
+        }
+
     }
 }
 

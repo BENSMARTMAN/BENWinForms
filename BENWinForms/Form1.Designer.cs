@@ -32,30 +32,30 @@
             label2 = new Label();
             fileSystemWatcher1 = new FileSystemWatcher();
             label3 = new Label();
-            button1 = new Button();
+            buttonSave = new Button();
             label4 = new Label();
             listBox1 = new ListBox();
             textBox1 = new TextBox();
             textBox2 = new TextBox();
             textBox3 = new TextBox();
-            button2 = new Button();
+            buttonDelete = new Button();
             tabControl1 = new TabControl();
             tabPage1 = new TabPage();
             tabPage2 = new TabPage();
             tableLayoutPanel1 = new TableLayoutPanel();
             dataGridView1 = new DataGridView();
             panel1 = new Panel();
-            button11 = new Button();
+            buttonDLtoExcel = new Button();
             buttonDeleteSelected = new Button();
-            button10 = new Button();
-            button9 = new Button();
+            buttonCreateFile = new Button();
+            buttonOpenFile = new Button();
             SearchBox = new TextBox();
-            button3 = new Button();
-            button8 = new Button();
-            button4 = new Button();
-            button7 = new Button();
-            button5 = new Button();
-            button6 = new Button();
+            buttonConnection = new Button();
+            buttonSearch = new Button();
+            buttonDataShow = new Button();
+            buttonRemove = new Button();
+            buttonNew = new Button();
+            buttonUpdate = new Button();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -98,15 +98,15 @@
             label3.TabIndex = 2;
             label3.Text = "說明 :";
             // 
-            // button1
+            // buttonSave
             // 
-            button1.Location = new Point(3, 203);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 3;
-            button1.Text = "儲存";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_Click;
+            buttonSave.Location = new Point(3, 203);
+            buttonSave.Name = "buttonSave";
+            buttonSave.Size = new Size(94, 29);
+            buttonSave.TabIndex = 3;
+            buttonSave.Text = "儲存";
+            buttonSave.UseVisualStyleBackColor = true;
+            buttonSave.Click += buttonSave_Click;
             // 
             // label4
             // 
@@ -148,15 +148,15 @@
             textBox3.Size = new Size(197, 27);
             textBox3.TabIndex = 8;
             // 
-            // button2
+            // buttonDelete
             // 
-            button2.Location = new Point(119, 203);
-            button2.Name = "button2";
-            button2.Size = new Size(94, 29);
-            button2.TabIndex = 9;
-            button2.Text = "移除";
-            button2.UseVisualStyleBackColor = true;
-            button2.Click += button2_Click;
+            buttonDelete.Location = new Point(119, 203);
+            buttonDelete.Name = "buttonDelete";
+            buttonDelete.Size = new Size(94, 29);
+            buttonDelete.TabIndex = 9;
+            buttonDelete.Text = "移除";
+            buttonDelete.UseVisualStyleBackColor = true;
+            buttonDelete.Click += buttonDelete_Click;
             // 
             // tabControl1
             // 
@@ -167,14 +167,14 @@
             tabControl1.SelectedIndex = 0;
             tabControl1.Size = new Size(1084, 589);
             tabControl1.TabIndex = 0;
-            tabControl1.Click += button4_Click;
+            tabControl1.Click += buttonDataShow_Click;
             // 
             // tabPage1
             // 
             tabPage1.Controls.Add(textBox1);
-            tabPage1.Controls.Add(button2);
+            tabPage1.Controls.Add(buttonDelete);
             tabPage1.Controls.Add(label1);
-            tabPage1.Controls.Add(button1);
+            tabPage1.Controls.Add(buttonSave);
             tabPage1.Controls.Add(listBox1);
             tabPage1.Controls.Add(textBox3);
             tabPage1.Controls.Add(label4);
@@ -229,32 +229,32 @@
             // 
             // panel1
             // 
-            panel1.Controls.Add(button11);
+            panel1.Controls.Add(buttonDLtoExcel);
             panel1.Controls.Add(buttonDeleteSelected);
-            panel1.Controls.Add(button10);
-            panel1.Controls.Add(button9);
+            panel1.Controls.Add(buttonCreateFile);
+            panel1.Controls.Add(buttonOpenFile);
             panel1.Controls.Add(SearchBox);
-            panel1.Controls.Add(button3);
-            panel1.Controls.Add(button8);
-            panel1.Controls.Add(button4);
-            panel1.Controls.Add(button7);
-            panel1.Controls.Add(button5);
-            panel1.Controls.Add(button6);
+            panel1.Controls.Add(buttonConnection);
+            panel1.Controls.Add(buttonSearch);
+            panel1.Controls.Add(buttonDataShow);
+            panel1.Controls.Add(buttonRemove);
+            panel1.Controls.Add(buttonNew);
+            panel1.Controls.Add(buttonUpdate);
             panel1.Dock = DockStyle.Fill;
             panel1.Location = new Point(3, 3);
             panel1.Name = "panel1";
             panel1.Size = new Size(1064, 177);
             panel1.TabIndex = 2;
             // 
-            // button11
+            // buttonDLtoExcel
             // 
-            button11.Location = new Point(620, 65);
-            button11.Name = "button11";
-            button11.Size = new Size(135, 39);
-            button11.TabIndex = 11;
-            button11.Text = "資料彙整下載";
-            button11.UseVisualStyleBackColor = true;
-            button11.Click += button11_Click;
+            buttonDLtoExcel.Location = new Point(620, 65);
+            buttonDLtoExcel.Name = "buttonDLtoExcel";
+            buttonDLtoExcel.Size = new Size(135, 39);
+            buttonDLtoExcel.TabIndex = 11;
+            buttonDLtoExcel.Text = "資料彙整下載";
+            buttonDLtoExcel.UseVisualStyleBackColor = true;
+            buttonDLtoExcel.Click += buttonDLtoExcel_Click;
             // 
             // buttonDeleteSelected
             // 
@@ -266,24 +266,24 @@
             buttonDeleteSelected.UseVisualStyleBackColor = true;
             buttonDeleteSelected.Click += buttonDeleteSelected_Click;
             // 
-            // button10
+            // buttonCreateFile
             // 
-            button10.Location = new Point(477, 65);
-            button10.Name = "button10";
-            button10.Size = new Size(136, 39);
-            button10.TabIndex = 9;
-            button10.Text = "資料匯出";
-            button10.UseVisualStyleBackColor = true;
-            button10.Click += button10_Click;
+            buttonCreateFile.Location = new Point(477, 65);
+            buttonCreateFile.Name = "buttonCreateFile";
+            buttonCreateFile.Size = new Size(136, 39);
+            buttonCreateFile.TabIndex = 9;
+            buttonCreateFile.Text = "資料匯出";
+            buttonCreateFile.UseVisualStyleBackColor = true;
+            buttonCreateFile.Click += buttonCreateFile_Click;
             // 
-            // button9
+            // buttonOpenFile
             // 
-            button9.Location = new Point(477, 11);
-            button9.Name = "button9";
-            button9.Size = new Size(136, 42);
-            button9.TabIndex = 8;
-            button9.Text = "資料匯入";
-            button9.UseVisualStyleBackColor = true;
+            buttonOpenFile.Location = new Point(477, 11);
+            buttonOpenFile.Name = "buttonOpenFile";
+            buttonOpenFile.Size = new Size(136, 42);
+            buttonOpenFile.TabIndex = 8;
+            buttonOpenFile.Text = "資料匯入";
+            buttonOpenFile.UseVisualStyleBackColor = true;
             // 
             // SearchBox
             // 
@@ -293,65 +293,65 @@
             SearchBox.Size = new Size(459, 43);
             SearchBox.TabIndex = 7;
             // 
-            // button3
+            // buttonConnection
             // 
-            button3.Location = new Point(12, 12);
-            button3.Name = "button3";
-            button3.Size = new Size(149, 43);
-            button3.TabIndex = 0;
-            button3.Text = "連線測試";
-            button3.UseVisualStyleBackColor = true;
-            button3.Click += button3_Click;
+            buttonConnection.Location = new Point(12, 12);
+            buttonConnection.Name = "buttonConnection";
+            buttonConnection.Size = new Size(149, 43);
+            buttonConnection.TabIndex = 0;
+            buttonConnection.Text = "連線測試";
+            buttonConnection.UseVisualStyleBackColor = true;
+            buttonConnection.Click += buttonConnection_Click;
             // 
-            // button8
+            // buttonSearch
             // 
-            button8.Location = new Point(322, 65);
-            button8.Name = "button8";
-            button8.Size = new Size(149, 39);
-            button8.TabIndex = 6;
-            button8.Text = "搜尋";
-            button8.UseVisualStyleBackColor = true;
-            button8.Click += button8_Click;
+            buttonSearch.Location = new Point(322, 65);
+            buttonSearch.Name = "buttonSearch";
+            buttonSearch.Size = new Size(149, 39);
+            buttonSearch.TabIndex = 6;
+            buttonSearch.Text = "搜尋";
+            buttonSearch.UseVisualStyleBackColor = true;
+            buttonSearch.Click += buttonSearch_Click;
             // 
-            // button4
+            // buttonDataShow
             // 
-            button4.Location = new Point(12, 61);
-            button4.Name = "button4";
-            button4.Size = new Size(149, 43);
-            button4.TabIndex = 2;
-            button4.Text = "資料顯示";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click;
+            buttonDataShow.Location = new Point(12, 61);
+            buttonDataShow.Name = "buttonDataShow";
+            buttonDataShow.Size = new Size(149, 43);
+            buttonDataShow.TabIndex = 2;
+            buttonDataShow.Text = "資料顯示";
+            buttonDataShow.UseVisualStyleBackColor = true;
+            buttonDataShow.Click += buttonDataShow_Click;
             // 
-            // button7
+            // buttonRemove
             // 
-            button7.Location = new Point(322, 13);
-            button7.Name = "button7";
-            button7.Size = new Size(149, 40);
-            button7.TabIndex = 5;
-            button7.Text = "刪除";
-            button7.UseVisualStyleBackColor = true;
-            button7.Click += button7_Click;
+            buttonRemove.Location = new Point(322, 13);
+            buttonRemove.Name = "buttonRemove";
+            buttonRemove.Size = new Size(149, 40);
+            buttonRemove.TabIndex = 5;
+            buttonRemove.Text = "刪除";
+            buttonRemove.UseVisualStyleBackColor = true;
+            buttonRemove.Click += buttonRemove_Click;
             // 
-            // button5
+            // buttonNew
             // 
-            button5.Location = new Point(167, 13);
-            button5.Name = "button5";
-            button5.Size = new Size(149, 40);
-            button5.TabIndex = 3;
-            button5.Text = "新增";
-            button5.UseVisualStyleBackColor = true;
-            button5.Click += button5_Click;
+            buttonNew.Location = new Point(167, 13);
+            buttonNew.Name = "buttonNew";
+            buttonNew.Size = new Size(149, 40);
+            buttonNew.TabIndex = 3;
+            buttonNew.Text = "新增";
+            buttonNew.UseVisualStyleBackColor = true;
+            buttonNew.Click += buttonNew_Click;
             // 
-            // button6
+            // buttonUpdate
             // 
-            button6.Location = new Point(167, 65);
-            button6.Name = "button6";
-            button6.Size = new Size(149, 39);
-            button6.TabIndex = 4;
-            button6.Text = "編輯";
-            button6.UseVisualStyleBackColor = true;
-            button6.Click += button6_Click;
+            buttonUpdate.Location = new Point(167, 65);
+            buttonUpdate.Name = "buttonUpdate";
+            buttonUpdate.Size = new Size(149, 39);
+            buttonUpdate.TabIndex = 4;
+            buttonUpdate.Text = "編輯";
+            buttonUpdate.UseVisualStyleBackColor = true;
+            buttonUpdate.Click += buttonUpdate_Click;
             // 
             // Form1
             // 
@@ -382,28 +382,28 @@
         private FileSystemWatcher fileSystemWatcher1;
         private ListBox listBox1;
         private Label label4;
-        private Button button1;
+        private Button buttonSave;
         private Label label3;
         private TextBox textBox3;
         private TextBox textBox2;
         private TextBox textBox1;
-        private Button button2;
+        private Button buttonDelete;
         private TabControl tabControl1;
         private TabPage tabPage1;
         private TabPage tabPage2;
-        private Button button3;
+        private Button buttonConnection;
         private DataGridView dataGridView1;
-        private Button button4;
-        private Button button7;
-        private Button button6;
-        private Button button5;
-        private Button button8;
+        private Button buttonDataShow;
+        private Button buttonRemove;
+        private Button buttonUpdate;
+        private Button buttonNew;
+        private Button buttonSearch;
         private TableLayoutPanel tableLayoutPanel1;
         private Panel panel1;
         private TextBox SearchBox;
         private Button buttonDeleteSelected;
-        private Button button10;
-        private Button button9;
-        private Button button11;
+        private Button buttonCreateFile;
+        private Button buttonOpenFile;
+        private Button buttonDLtoExcel;
     }
 }
