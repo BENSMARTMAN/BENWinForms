@@ -495,6 +495,7 @@ namespace BENWinForms
             {
                 dataGridView1.Columns[i].HeaderText = headerNames[i];
             }
+
             using (ClosedXML.Excel.XLWorkbook workbook = new ClosedXML.Excel.XLWorkbook())
             {
                 var worksheet = workbook.Worksheets.Add("原始物品資料");
@@ -502,28 +503,84 @@ namespace BENWinForms
                 {
                     worksheet.Cell(1, i + 1).Value = headerNames[i];
                 }
+                // 設置MarketValue欄位為數字格式，右對齊並設置為貨幣格式
+                for (int row = 2; row <= itemsList.Count + 1; row++)
+                {
+                    // 嘗試將MarketValue轉換為整數
+                    int marketValue;
+                    if (int.TryParse(worksheet.Cell(row, 4).GetString(), out marketValue))
+                    {
+                        worksheet.Cell(row, 4).Value = marketValue;  // 將轉換成功的整數設為儲存格的值
+                        worksheet.Cell(row, 4).Style.Alignment.Horizontal = ClosedXML.Excel.XLAlignmentHorizontalValues.Right;
+                        worksheet.Cell(row, 4).Style.NumberFormat.Format = "$#,##0";
+                    }
+                }
+
                 worksheet.Cell(2, 1).InsertData(itemsList);
                 var worksheet2 = workbook.Worksheets.Add("價值前三高物品");
                 var top3 = itemsList.OrderByDescending(p => int.Parse(p.MarketValue)).Take(3).ToList();
                 worksheet2.Cell(1, 1).Value = "項次";
                 worksheet2.Cell(1, 2).Value = "名稱";
-                worksheet2.Cell(1, 3).Value = "價值";
+                worksheet2.Cell(1, 3).Value = "數量";
+                worksheet2.Cell(1, 4).Value = "價值";
                 for (int i = 0; i < top3.Count; i++)
                 {
                     worksheet2.Cell(i + 2, 1).Value = top3[i].Id;
                     worksheet2.Cell(i + 2, 2).Value = top3[i].Name;
-                    worksheet2.Cell(i + 2, 3).Value = top3[i].MarketValue;
+                    worksheet2.Cell(i + 2, 3).Value = top3[i].Quantity;
+                    worksheet2.Cell(i + 2, 4).Value = top3[i].MarketValue;
+                    // 嘗試將MarketValue轉換為整數
+                    int marketValue;
+                    if (int.TryParse(top3[i].MarketValue, out marketValue))
+                    {
+                        worksheet2.Cell(i + 2, 4).Value = marketValue;  // 將轉換成功的整數設為儲存格的值
+                        worksheet2.Cell(i + 2, 4).Style.Alignment.Horizontal = ClosedXML.Excel.XLAlignmentHorizontalValues.Right;
+                        worksheet2.Cell(i + 2, 4).Style.NumberFormat.Format = "$#,##0";
+                    }
                 }
+                // 計算總價值（價值 * 數量）
+                int totalValue = top3.Sum(item => int.Parse(item.MarketValue) * int.Parse(item.Quantity));
+
+                // 在最後一行顯示總價值並設定字體為紅色
+                worksheet2.Cell(5, 1).Value = "總價值";
+                worksheet2.Cell(5, 1).Style.Font.FontColor = ClosedXML.Excel.XLColor.Red;
+                worksheet2.Cell(5, 4).Value = totalValue;
+                worksheet2.Cell(5, 4).Style.Font.FontColor = ClosedXML.Excel.XLColor.Red;
+                worksheet2.Cell(5, 4).Style.Alignment.Horizontal = ClosedXML.Excel.XLAlignmentHorizontalValues.Right;
+                worksheet2.Cell(5, 4).Style.NumberFormat.Format = "$#,##0";
+
                 var groupByArea = itemsList.GroupBy(p => p.Type);
                 foreach (var group in groupByArea)
                 {
                     var worksheetByArea = workbook.Worksheets.Add(group.Key);
-                    var parkLotsByArea = group.ToList();
+                    var itemsByType = group.ToList();
                     for (int i = 0; i < headerNames.Count; i++)
                     {
                         worksheetByArea.Cell(1, i + 1).Value = headerNames[i];
                     }
-                    worksheetByArea.Cell(2, 1).InsertData(parkLotsByArea);
+                    worksheetByArea.Cell(2, 1).InsertData(itemsByType);
+                    // 設置MarketValue欄位為整數格式，右對齊並設置為貨幣格式
+                    for (int row = 2; row <= itemsByType.Count + 1; row++)
+                    {
+                        int marketValue;
+                        if (int.TryParse(worksheetByArea.Cell(row, 4).GetString(), out marketValue))
+                        {
+                            worksheetByArea.Cell(row, 4).Value = marketValue;  // 將轉換成功的整數設為儲存格的值
+                            worksheetByArea.Cell(row, 4).Style.Alignment.Horizontal = ClosedXML.Excel.XLAlignmentHorizontalValues.Right;
+                            worksheetByArea.Cell(row, 4).Style.NumberFormat.Format = "$#,##0";
+                        }
+                    }
+                    // 計算每個分頁的總價值
+                    int totalValueByType = itemsByType.Sum(item => int.Parse(item.MarketValue) * int.Parse(item.Quantity));
+
+                    // 在分頁的最後一行顯示總價值並設定為紅色
+                    int lastRow = itemsByType.Count + 2;  // 確定顯示總價值的行
+                    worksheetByArea.Cell(lastRow, 1).Value = "總價值";
+                    worksheetByArea.Cell(lastRow, 1).Style.Font.FontColor = ClosedXML.Excel.XLColor.Red;
+                    worksheetByArea.Cell(lastRow, 4).Value = totalValueByType;
+                    worksheetByArea.Cell(lastRow, 4).Style.Font.FontColor = ClosedXML.Excel.XLColor.Red;
+                    worksheetByArea.Cell(lastRow, 4).Style.Alignment.Horizontal = ClosedXML.Excel.XLAlignmentHorizontalValues.Right;
+                    worksheetByArea.Cell(lastRow, 4).Style.NumberFormat.Format = "$#,##0";
                 }
                 workbook.SaveAs("Summary.xlsx");
                 ProcessStartInfo psi = new ProcessStartInfo()
