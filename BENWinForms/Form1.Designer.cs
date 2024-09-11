@@ -56,6 +56,12 @@
             buttonRemove = new Button();
             buttonNew = new Button();
             buttonUpdate = new Button();
+            tabPage3 = new TabPage();
+            tabPage4 = new TabPage();
+            tabPage5 = new TabPage();
+            cartesianChart1 = new LiveChartsCore.SkiaSharpView.WinForms.CartesianChart();
+            cartesianChart2 = new LiveChartsCore.SkiaSharpView.WinForms.CartesianChart();
+            pieChart1 = new LiveChartsCore.SkiaSharpView.WinForms.PieChart();
             ((System.ComponentModel.ISupportInitialize)fileSystemWatcher1).BeginInit();
             tabControl1.SuspendLayout();
             tabPage1.SuspendLayout();
@@ -63,6 +69,9 @@
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             panel1.SuspendLayout();
+            tabPage3.SuspendLayout();
+            tabPage4.SuspendLayout();
+            tabPage5.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -162,6 +171,9 @@
             // 
             tabControl1.Controls.Add(tabPage1);
             tabControl1.Controls.Add(tabPage2);
+            tabControl1.Controls.Add(tabPage3);
+            tabControl1.Controls.Add(tabPage4);
+            tabControl1.Controls.Add(tabPage5);
             tabControl1.Location = new Point(1, -2);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
@@ -353,6 +365,66 @@
             buttonUpdate.UseVisualStyleBackColor = true;
             buttonUpdate.Click += buttonUpdate_Click;
             // 
+            // tabPage3
+            // 
+            tabPage3.Controls.Add(cartesianChart1);
+            tabPage3.Location = new Point(4, 28);
+            tabPage3.Name = "tabPage3";
+            tabPage3.Size = new Size(1076, 557);
+            tabPage3.TabIndex = 2;
+            tabPage3.Text = "折線圖";
+            tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // tabPage4
+            // 
+            tabPage4.Controls.Add(cartesianChart2);
+            tabPage4.Location = new Point(4, 28);
+            tabPage4.Name = "tabPage4";
+            tabPage4.Size = new Size(1076, 557);
+            tabPage4.TabIndex = 3;
+            tabPage4.Text = "直線圖";
+            tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // tabPage5
+            // 
+            tabPage5.Controls.Add(pieChart1);
+            tabPage5.Location = new Point(4, 28);
+            tabPage5.Name = "tabPage5";
+            tabPage5.Size = new Size(1076, 557);
+            tabPage5.TabIndex = 4;
+            tabPage5.Text = "圓餅圖";
+            tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // cartesianChart1
+            // 
+            cartesianChart1.Dock = DockStyle.Fill;
+            cartesianChart1.Location = new Point(0, 0);
+            cartesianChart1.Name = "cartesianChart1";
+            cartesianChart1.Size = new Size(1076, 557);
+            cartesianChart1.TabIndex = 0;
+            // 
+            // cartesianChart2
+            // 
+            cartesianChart2.Dock = DockStyle.Fill;
+            cartesianChart2.Location = new Point(0, 0);
+            cartesianChart2.Name = "cartesianChart2";
+            cartesianChart2.Size = new Size(1076, 557);
+            cartesianChart2.TabIndex = 0;
+            // 
+            // pieChart1
+            // 
+            pieChart1.Dock = DockStyle.Fill;
+            pieChart1.InitialRotation = 0D;
+            pieChart1.IsClockwise = true;
+            pieChart1.Location = new Point(0, 0);
+            pieChart1.MaxAngle = 360D;
+            pieChart1.MaxValue = null;
+            pieChart1.MinValue = 0D;
+            pieChart1.Name = "pieChart1";
+            pieChart1.Size = new Size(1076, 557);
+            pieChart1.TabIndex = 0;
+            pieChart1.Total = null;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
@@ -372,6 +444,9 @@
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
+            tabPage3.ResumeLayout(false);
+            tabPage4.ResumeLayout(false);
+            tabPage5.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -405,5 +480,11 @@
         private Button buttonCreateFile;
         private Button buttonOpenFile;
         private Button buttonDLtoExcel;
+        private TabPage tabPage3;
+        private TabPage tabPage4;
+        private TabPage tabPage5;
+        private LiveChartsCore.SkiaSharpView.WinForms.CartesianChart cartesianChart1;
+        private LiveChartsCore.SkiaSharpView.WinForms.CartesianChart cartesianChart2;
+        private LiveChartsCore.SkiaSharpView.WinForms.PieChart pieChart1;
     }
 }

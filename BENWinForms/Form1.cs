@@ -8,8 +8,14 @@ using BENWinForms.DatsModels;
 using ClosedXML.Excel;
 using Dapper;
 using DocumentFormat.OpenXml.Spreadsheet;
+using LiveChartsCore.SkiaSharpView.Painting.Effects;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView;
 using Microsoft.VisualBasic.Devices;
+using SkiaSharp;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using LiveChartsCore.VisualElements;
+using LiveChartsCore.SkiaSharpView.VisualElements;
 
 namespace BENWinForms
 {
@@ -280,7 +286,9 @@ namespace BENWinForms
                 // 綁定新的資料
                 dataGridView1.DataSource = items;
                 AddCheckBoxColumn();
+               
             }
+            
         }
         bool[] isAscendingFlags = [false, false, false, false, false, false, false, false];
         private void dataGridView1_ColumnHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -593,6 +601,136 @@ namespace BENWinForms
                 };
                 System.Diagnostics.Process.Start(psi);
             }
+            // 用區域名稱groupby
+            var groupedByType = itemsList.GroupBy(g => g.Type);
+            // 用Select去選取區域名稱和總停車格數量
+            // new { ... } => 匿名型別 
+            var totalSpacesByType = groupedByType.Select(g => new
+            {
+                type = g.Key, 
+                TotalValue = g.Sum(item => int.Parse(item.MarketValue) * int.Parse(item.Quantity))
+            }).ToList();
+            // 產生圖表 (折線圖)
+            cartesianChart1.Series =
+            [
+                new LineSeries<int>
+                    {
+                        Values = totalSpacesByType.Select(t => t.TotalValue)
+                    },
+                ];
+            // 設定圖表上方的標題
+            cartesianChart1.Title = new LabelVisual
+            {
+                Text = "每個類型的總價值",
+                TextSize = 25,
+                Padding = new LiveChartsCore.Drawing.Padding(15),
+                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
+            };
+            //設定圖表X軸的資訊
+            cartesianChart1.XAxes =
+            [
+                new Axis
+                    {
+                        // Use the labels property to define named labels.
+                        Labels = totalSpacesByType.Select(t => t.type).ToList(),
+                        Name = "類型",
+                        NamePaint = new SolidColorPaint(SKColors.Black),
+                        LabelsPaint = new SolidColorPaint(SKColors.Blue),
+                        TextSize = 16,
+                        SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray) { StrokeThickness = 2 }
+                    }
+            ];
+            //設定圖表Y軸的資訊
+            cartesianChart1.YAxes =
+            [
+                new Axis
+                    {
+                        Name = "總價值",
+                        NamePaint = new SolidColorPaint(SKColors.Red),
+                        LabelsPaint = new SolidColorPaint(SKColors.Green),
+                        TextSize = 20,
+                        SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
+                        {
+                            StrokeThickness = 2,
+                            PathEffect = new DashEffect(new float[] { 3, 3 })
+                        }
+                    }
+            ];
+            var top3Type = itemsList
+                    .GroupBy(g => g.Name)
+                    .Select(g => new
+                    {
+                        name = g.Key,
+                        TotalValue = g.Sum(item => int.Parse(item.Quantity))
+                    })
+                    .OrderByDescending(p => p.TotalValue)
+                    .Take(3)
+                    .ToList();
+            // 顯示直條圖
+            cartesianChart2.Series =
+            [
+                new ColumnSeries<int>
+                    {
+                        Values = top3Type.Select(t => t.TotalValue).ToList(), // 選取停車格數量
+                    }
+            ];
+            // 設定圖表上方的標題
+            cartesianChart2.Title = new LabelVisual
+            {
+                Text = "前三名數量最多的物品",
+                TextSize = 25,
+                Padding = new LiveChartsCore.Drawing.Padding(15),
+                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
+            };
+            // 設定X軸的資訊
+            cartesianChart2.XAxes =
+            [
+                new Axis
+                    {
+                        //設定X軸的標籤，使用Select選取停車場名稱，最後用ToList()轉成陣列
+                        Labels = top3Type.Select(t => t.name).ToList(),
+                        Name = "物品名稱",
+                        TextSize = 12,
+                        LabelsRotation = 45
+                    }
+            ];
+            // 設定Y軸的資訊
+            cartesianChart2.YAxes =
+            [
+                new Axis
+                    {
+                        Name = "數量",
+                        NamePaint = new SolidColorPaint(SKColors.Red),
+                        LabelsPaint = new SolidColorPaint(SKColors.Green),
+                        TextSize = 20,
+                        SeparatorsPaint = new SolidColorPaint(SKColors.LightSlateGray)
+                        {
+                            StrokeThickness = 2,
+                            PathEffect = new DashEffect([3, 3])
+                        }
+                    }
+            ];
+            pieChart1.Series = totalSpacesByType
+                    .OrderByDescending(t => t.TotalValue)
+                    .Select(t => new PieSeries<int>
+                    {
+                        Values = new List<int> { t.TotalValue },
+                        Name = t.type,
+                        DataLabelsPaint = new SolidColorPaint(SKColors.Black),
+                        DataLabelsSize = 22,
+                       
+                        DataLabelsPosition = LiveChartsCore.Measure.PolarLabelsPosition.Middle,
+                        DataLabelsFormatter = p => t.type + ": " + t.TotalValue
+                    })
+                    .ToList();
+            // 設定圖表上方的標題
+            pieChart1.Title = new LabelVisual
+            {
+                Text = "物品類型總價值圓餅圖",
+                TextSize = 25,
+                Padding = new LiveChartsCore.Drawing.Padding(15),
+                Paint = new SolidColorPaint(SKColors.DarkSlateGray)
+            };
             MessageBox.Show("下載成功");
         }
         public void SetHeaderStyle(IXLWorksheet worksheet, List<string> headerNames)
